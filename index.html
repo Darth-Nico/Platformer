@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materialen</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: #1e2338;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .materialen {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 20px;
+            position: relative;
+        }
+        .materiaal {
+            margin: 20px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .materiaal:hover img {
+            transform: translateY(-5px);
+        }
+        .materiaal:hover {
+            transform: none;
+        }
+        img {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+        h2 {
+            display: none;
+        }
+        .progress {
+            width: 300px;
+            height: 25px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #4db2ff;
+            box-shadow: 0 0 10px rgba(77, 178, 255, 0.3);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .progress-bar {
+            width: 30%;
+            height: 100%;
+            /* Standaard kleur voor niet-volle bar */
+            background: #4db2ff;
+            transition: width 0.3s ease, background 0.5s ease;
+            position: absolute;
+            left: 0;
+            overflow: hidden;
+        }
+
+        /* Speciale styling voor volle progress bar */
+        .progress-bar.full {
+            background: linear-gradient(90deg, #4db2ff, #00ff88);
+            box-shadow: 0 0 15px rgba(77, 178, 255, 0.5);
+            animation: fullGlare 1s infinite;
+        }
+
+        /* Shine effect alleen voor volle progress bar */
+        .progress-bar.full::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.3) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            animation: shine 1.5s infinite;
+        }
+
+        /* Completion animatie */
+        @keyframes completion {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .widgets {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .widget-icon {
+            background: linear-gradient(135deg, #4db2ff, #00ff88);
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(77, 178, 255, 0.5);
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .widget-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(77, 178, 255, 0.8);
+        }
+        .widget-icon i {
+            color: white;
+            font-size: 1.5em;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));
+        }
+        .settings {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .progress-text {
+            position: absolute;
+            transform: translateY(-50%);
+            top: 50%;
+            width: 100%;
+            text-align: center;
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 16px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7),
+                         0 0 10px rgba(0, 255, 255, 0.5);
+            z-index: 1;
+            font-family: 'Segoe UI', sans-serif;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        @keyframes fullGlare {
+            0% {
+                background: linear-gradient(90deg, #4db2ff, #00ff88);
+                box-shadow: 0 0 15px rgba(77, 178, 255, 0.5);
+            }
+            50% {
+                background: linear-gradient(90deg, #5dccff, #22ff99);
+                box-shadow: 0 0 35px rgba(77, 178, 255, 1);
+            }
+            100% {
+                background: linear-gradient(90deg, #4db2ff, #00ff88);
+                box-shadow: 0 0 15px rgba(77, 178, 255, 0.5);
+            }
+        }
+        .materiaal.shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+        .resource-counters {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            transform: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .resource-counter {
+            background: rgba(30, 35, 56, 0.95);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #4db2ff;
+            box-shadow: 0 0 15px rgba(77, 178, 255, 0.2);
+            min-width: 100px;
+            justify-content: flex-start;
+        }
+
+        .resource-icon {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .resource-amount {
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            min-width: 30px;
+            text-align: right;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal {
+            background: #1e2338;
+            border: 2px solid #4db2ff;
+            border-radius: 15px;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 30px rgba(77, 178, 255, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4db2ff;
+        }
+
+        .modal-title {
+            color: #00ffff;
+            font-size: 24px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #00ffff;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+
+        .close-modal:hover {
+            transform: scale(1.1);
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .shop-item {
+            background: rgba(77, 178, 255, 0.1);
+            border: 1px solid #4db2ff;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-5px);
+            background: rgba(77, 178, 255, 0.2);
+        }
+
+        .shop-item-image {
+            font-size: 40px;
+            color: #4db2ff;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px rgba(77, 178, 255, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .shop-item:hover .shop-item-image {
+            transform: scale(1.1);
+        }
+
+        .shop-item-title {
+            color: #00ffff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .shop-item-cost {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .cost-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: cover;
+        }
+
+        .cost-amount {
+            color: #ffffff;
+        }
+
+        .shop-item-description {
+            font-size: 0.9em;
+            color: #aaaaaa;
+            text-align: center;
+        }
+
+        .level-up-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffff;
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            animation: levelUpAnimation 2s ease-out forwards;
+            z-index: 1000;
+            text-align: center;
+            background: none;
+            padding: 0;
+            border: none;
+        }
+
+        @keyframes levelUpAnimation {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        @keyframes clickPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        .click-animation {
+            animation: clickPulse 0.2s ease;
+        }
+
+        .floating-number {
+            position: absolute;
+            color: #00ffff;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 10;
+            left: 10px !important;
+            top: 45px !important;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .resource-counter-container {
+            position: relative;
+        }
+
+        .level-indicator {
+            color: #00ffff;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .shop-item {
+            position: relative;
+            transition: opacity 0.3s;
+        }
+
+        .shop-item:hover::before {
+            content: 'Click to buy!';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #fff;
+            pointer-events: none;
+        }
+
+        /* Voeg deze styles toe voor de bevestigings-modal */
+        .confirm-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e2338;
+            border: 2px solid #4db2ff;
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 1100;
+            display: none;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(77, 178, 255, 0.3);
+        }
+
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .confirm-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .confirm-yes {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .confirm-no {
+            background: #f44336;
+            color: white;
+        }
+
+        .confirm-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Style voor de error modal */
+        .error-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e2338;
+            border: 2px solid #f44336;
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 1100;
+            display: none;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(244, 67, 54, 0.3);
+        }
+
+        .error-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+            background: #f44336;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .error-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Style voor de floating cost animatie */
+        .floating-cost {
+            position: absolute;
+            color: #ff4444;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.8);
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 10;
+        }
+
+        /* Style voor inventory items */
+        .inventory-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .inventory-item {
+            background: rgba(77, 178, 255, 0.1);
+            border: 1px solid #4db2ff;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .inventory-item-image {
+            font-size: 40px;
+            color: #4db2ff;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px rgba(77, 178, 255, 0.5);
+        }
+
+        .inventory-item-title {
+            color: #00ffff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .inventory-item-amount {
+            color: #ffffff;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .inventory-item-description {
+            font-size: 0.9em;
+            color: #aaaaaa;
+            text-align: center;
+        }
+
+        /* Voeg deze styles toe voor disabled shop items */
+        .shop-item.owned {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(128, 128, 128, 0.1);
+            border-color: #666;
+        }
+
+        .shop-item.owned .shop-item-image {
+            color: #666;
+            text-shadow: none;
+        }
+
+        .shop-item.owned:hover {
+            transform: none;
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .shop-item.owned:hover::before {
+            content: 'Already owned!';
+        }
+    </style>
+</head>
+<body>
+    <!-- Settings icon -->
+    <div class="settings widget-icon">
+        <i class="fas fa-cog fa-lg"></i>
+    </div>
+
+    <!-- Widgets aan de rechterkant -->
+    <div class="widgets">
+        <div class="widget-icon">
+            <i class="fas fa-shopping-cart fa-lg"></i>
+        </div>
+        <div class="widget-icon">
+            <i class="fas fa-arrow-up fa-lg"></i>
+        </div>
+        <div class="widget-icon">
+            <i class="fas fa-briefcase fa-lg"></i>
+        </div>
+    </div>
+
+    <div class="materialen">
+        <div class="materiaal" data-resource="hout">
+            <div class="progress">
+                <span class="progress-text">0/10</span>
+                <div class="progress-bar" style="width: 0%"></div>
+            </div>
+            <img src="assets/wood.png" alt="Hout">
+        </div>
+        <div class="materiaal" data-resource="steen">
+            <div class="progress">
+                <span class="progress-text">0/10</span>
+                <div class="progress-bar" style="width: 0%"></div>
+            </div>
+            <img src="assets/stone.png" alt="Steen">
+        </div>
+        <div class="materiaal" data-resource="metaal">
+            <div class="progress">
+                <span class="progress-text">0/10</span>
+                <div class="progress-bar" style="width: 0%"></div>
+            </div>
+            <img src="assets/metal.png" alt="Metaal">
+        </div>
+    </div>
+
+    <div class="resource-counters">
+        <div class="level-indicator">Level <span id="resource-level">1</span></div>
+        <div class="resource-counter-container">
+            <div class="resource-counter">
+                <img src="assets/wood.png" alt="Hout" class="resource-icon">
+                <span class="resource-amount" id="hout-amount">0</span>
+            </div>
+        </div>
+        <div class="resource-counter-container">
+            <div class="resource-counter">
+                <img src="assets/stone.png" alt="Steen" class="resource-icon">
+                <span class="resource-amount" id="steen-amount">0</span>
+            </div>
+        </div>
+        <div class="resource-counter-container">
+            <div class="resource-counter">
+                <img src="assets/metal.png" alt="Metaal" class="resource-icon">
+                <span class="resource-amount" id="metaal-amount">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="shopModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Shop</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="shop-items">
+                <!-- Auto Collector -->
+                <div class="shop-item" data-item="autoCollector">
+                    <i class="fas fa-robot shop-item-image"></i>
+                    <div class="shop-item-title">Auto Collector</div>
+                    <div class="shop-item-cost">
+                        <img src="assets/wood.png" class="cost-icon" alt="wood">
+                        <span class="cost-amount">50</span>
+                    </div>
+                    <div class="shop-item-description">Verzamelt automatisch resources</div>
+                </div>
+
+                <!-- Click Multiplier -->
+                <div class="shop-item" data-item="clickMultiplier">
+                    <i class="fas fa-multiply shop-item-image"></i>
+                    <div class="shop-item-title">Click Multiplier</div>
+                    <div class="shop-item-cost">
+                        <img src="assets/stone.png" class="cost-icon" alt="stone">
+                        <span class="cost-amount">100</span>
+                    </div>
+                    <div class="shop-item-description">2x resources per klik</div>
+                </div>
+
+                <!-- Speed Boost -->
+                <div class="shop-item" data-item="speedBoost">
+                    <i class="fas fa-bolt shop-item-image"></i>
+                    <div class="shop-item-title">Speed Boost</div>
+                    <div class="shop-item-cost">
+                        <img src="assets/metal.png" class="cost-icon" alt="metal">
+                        <span class="cost-amount">75</span>
+                    </div>
+                    <div class="shop-item-description">Snellere cooldown tijd</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voeg deze HTML toe voor de bevestigings-modal -->
+    <div class="confirm-modal" id="confirmModal">
+        <h3>Weet je zeker dat je dit wilt kopen?</h3>
+        <p id="confirmDetails"></p>
+        <div class="confirm-buttons">
+            <button class="confirm-button confirm-yes" id="confirmYes">Ja</button>
+            <button class="confirm-button confirm-no" id="confirmNo">Nee</button>
+        </div>
+    </div>
+
+    <!-- Voeg deze HTML toe voor de error modal -->
+    <div class="error-modal" id="errorModal">
+        <h3 style="color: #f44336;">Niet genoeg resources!</h3>
+        <p id="errorDetails"></p>
+        <button class="error-button" id="errorOk">OK</button>
+    </div>
+
+    <!-- Voeg deze HTML toe voor de inventory modal -->
+    <div class="modal-overlay" id="inventoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Inventory</h2>
+                <button class="close-modal" id="closeInventory">&times;</button>
+            </div>
+            <div class="inventory-items">
+                <!-- Items worden hier dynamisch toegevoegd -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Voeg deze code toe aan het begin van het script
+        const sounds = {
+            pop: new Audio('assets/pop.mp3'),
+            levelUp: new Audio('assets/level-up.mp3'),
+            purchase: new Audio('assets/aankoop.mp3')
+        };
+
+        // Functie om een geluid te spelen met volume controle
+        function playSound(sound) {
+            // Maak een nieuwe kopie van het geluid om overlapping toe te staan
+            const soundClone = sound.cloneNode();
+            soundClone.volume = 0.3; // Zet het volume op 30%
+            soundClone.play();
+        }
+
+        // Update resource management met total en current waardes
+        const resources = {
+            hout: { current: 0, total: 0, max: 10, level: 1 },
+            steen: { current: 0, total: 0, max: 10, level: 1 },
+            metaal: { current: 0, total: 0, max: 10, level: 1 }
+        };
+
+        function calculateNewMax(level) {
+            return 10 + (level - 1) * 10; // Level 1: 10, Level 2: 20, Level 3: 30, etc.
+        }
+
+        function showLevelUpEffect() {
+            const oldLevelUp = document.querySelector('.level-up-text');
+            if (oldLevelUp) oldLevelUp.remove();
+
+            const newLevel = resources.hout.level + 1;
+
+            const levelText = document.createElement('div');
+            levelText.className = 'level-up-text';
+            levelText.textContent = `Level ${newLevel}!`;
+            document.body.appendChild(levelText);
+
+            playSound(sounds.levelUp);
+
+            setTimeout(() => levelText.remove(), 2000);
+        }
+
+        function checkLevelUp() {
+            const allMaxed = Object.values(resources).every(resource => 
+                resource.current >= resource.max
+            );
+
+            if (allMaxed) {
+                // Toon eerst de level up melding
+                showLevelUpEffect();
+
+                // Update dan de resources
+                Object.keys(resources).forEach(type => {
+                    const resource = resources[type];
+                    resource.level++;
+                    resource.total += resource.current;
+                    resource.current = 0;
+                    resource.max = calculateNewMax(resource.level);
+                    updateProgressBar(type);
+                });
+            }
+        }
+
+        // Cooldown management
+        const cooldowns = {
+            hout: false,
+            steen: false,
+            metaal: false
+        };
+
+        // Cooldown tijd in milliseconden
+        const COOLDOWN_TIME = 200; // 0.2 seconde cooldown
+
+        function updateProgressBar(resourceType) {
+            const material = document.querySelector(`.materiaal[data-resource="${resourceType}"]`);
+            const progressBar = material.querySelector('.progress-bar');
+            const progressText = material.querySelector('.progress-text');
+            const resource = resources[resourceType];
+            
+            const percentage = (resource.current / resource.max) * 100;
+            progressBar.style.width = `${percentage}%`;
+
+            if (percentage === 100) {
+                progressText.style.opacity = '0';
+                progressBar.classList.add('full');
+                progressBar.style.animation = 'completion 0.5s ease';
+                
+                setTimeout(() => {
+                    progressBar.style.animation = '';
+                }, 500);
+
+                checkLevelUp();
+            } else {
+                progressText.style.opacity = '1';
+                progressText.textContent = `${resource.current}/${resource.max}`;
+                progressBar.classList.remove('full');
+            }
+            
+            // Update de transform met behoud van vertical centering
+            progressText.style.transform = 'translateY(-50%) scale(1.1)';
+            setTimeout(() => {
+                progressText.style.transform = 'translateY(-50%) scale(1)';
+            }, 100);
+
+            // Update alleen de total waarde
+            const amountElement = document.getElementById(`${resourceType}-amount`);
+            if (amountElement) {
+                amountElement.textContent = resource.total;
+            }
+
+            // Update het algemene level (alleen nodig voor één resource type)
+            if (resourceType === 'hout') {  // We gebruiken hout als referentie
+                const levelElement = document.getElementById('resource-level');
+                if (levelElement) {
+                    levelElement.textContent = resource.level;
+                }
+            }
+        }
+
+        // Voeg deze variabelen toe aan het begin van je script
+        const clickStreaks = {
+            hout: { count: 0, timer: null },
+            steen: { count: 0, timer: null },
+            metaal: { count: 0, timer: null }
+        };
+
+        const STREAK_TIMEOUT = 1000; // 1 seconde timeout voor de streak
+
+        function showFloatingNumber(resourceType, x, y, count) {
+            const material = document.querySelector(`.materiaal[data-resource="${resourceType}"]`);
+            const floatingNumber = document.createElement('div');
+            floatingNumber.className = 'floating-number';
+            floatingNumber.textContent = count > 1 ? `+${count}` : '+1';
+            
+            material.appendChild(floatingNumber);
+            
+            setTimeout(() => floatingNumber.remove(), 1000);
+        }
+
+        function updateClickStreak(resourceType, x, y) {
+            const streak = clickStreaks[resourceType];
+            clearTimeout(streak.timer);
+            streak.count++;
+            
+            showFloatingNumber(resourceType, null, null, streak.count);
+            
+            streak.timer = setTimeout(() => {
+                streak.count = 0;
+            }, STREAK_TIMEOUT);
+        }
+
+        // Voeg deze configuratie toe bovenaan het script
+        const shopItems = {
+            autoCollector: {
+                id: 'autoCollector',
+                title: 'Auto Collector',
+                description: 'Verzamelt automatisch resources',
+                cost: { type: 'hout', amount: 50 },
+                owned: 0,
+                effect: function() {
+                    // Auto collect elke 2 seconden
+                    setInterval(() => {
+                        Object.keys(resources).forEach(type => {
+                            if (resources[type].current < resources[type].max) {
+                                resources[type].current++;
+                                resources[type].total++;
+                                updateProgressBar(type);
+                            }
+                        });
+                    }, 2000);
+                }
+            },
+            clickMultiplier: {
+                id: 'clickMultiplier',
+                title: 'Click Multiplier',
+                description: '2x resources per klik',
+                cost: { type: 'steen', amount: 100 },
+                owned: 0,
+                multiplier: 2
+            },
+            speedBoost: {
+                id: 'speedBoost',
+                title: 'Speed Boost',
+                description: 'Snellere cooldown tijd',
+                cost: { type: 'metaal', amount: 75 },
+                owned: 0,
+                speedMultiplier: 0.5
+            }
+        };
+
+        // Update de handleClick functie om de multiplier te gebruiken
+        function handleClick(resourceType, event) {
+            const material = document.querySelector(`.materiaal[data-resource="${resourceType}"]`);
+            const resource = resources[resourceType];
+            const img = material.querySelector('img');
+
+            if (resource.current === resource.max) {
+                material.classList.add('shake');
+                setTimeout(() => {
+                    material.classList.remove('shake');
+                }, 400);
+                return;
+            }
+
+            if (cooldowns[resourceType]) return;
+            
+            if (resource.current < resource.max) {
+                // Bereken de multiplier op basis van gekochte upgrades
+                const multiplier = Math.pow(shopItems.clickMultiplier.multiplier, shopItems.clickMultiplier.owned);
+                const amount = Math.min(
+                    resource.max - resource.current,
+                    Math.floor(multiplier)
+                );
+
+                img.classList.add('click-animation');
+                setTimeout(() => {
+                    img.classList.remove('click-animation');
+                }, 200);
+
+                const rect = material.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                updateClickStreak(resourceType, x, y, amount);
+
+                resource.current += amount;
+                resource.total += amount;
+                updateProgressBar(resourceType);
+                
+                playSound(sounds.pop);
+                
+                cooldowns[resourceType] = true;
+                
+                // Pas cooldown tijd aan op basis van speed boost
+                const cooldownTime = Math.max(50, COOLDOWN_TIME * Math.pow(shopItems.speedBoost.speedMultiplier, shopItems.speedBoost.owned));
+                
+                setTimeout(() => {
+                    cooldowns[resourceType] = false;
+                }, cooldownTime);
+            }
+        }
+
+        // Event listeners toevoegen
+        document.querySelectorAll('.materiaal').forEach(material => {
+            const resourceType = material.dataset.resource;
+            material.addEventListener('click', (e) => handleClick(resourceType, e));
+        });
+
+        // Shop modal functionality
+        const shopModal = document.getElementById('shopModal');
+        const shopIcon = document.querySelector('.fa-shopping-cart').parentElement;
+        const closeModal = document.querySelector('.close-modal');
+
+        shopIcon.addEventListener('click', () => {
+            updateShopUI();
+            shopModal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            shopModal.style.display = 'none';
+        });
+
+        // Sluit modal als er buiten wordt geklikt
+        shopModal.addEventListener('click', (e) => {
+            if (e.target === shopModal) {
+                shopModal.style.display = 'none';
+            }
+        });
+
+        // Bevestigings-modal functionaliteit
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmDetails = document.getElementById('confirmDetails');
+        const confirmYes = document.getElementById('confirmYes');
+        const confirmNo = document.getElementById('confirmNo');
+        let pendingPurchase = null;
+
+        function showConfirmation(item) {
+            confirmDetails.textContent = `${item.title} voor ${item.cost.amount} ${item.cost.type}`;
+            confirmModal.style.display = 'block';
+            pendingPurchase = item;
+        }
+
+        confirmYes.addEventListener('click', () => {
+            if (pendingPurchase) {
+                const item = pendingPurchase;
+                const resource = resources[item.cost.type];
+
+                if (resource.total >= item.cost.amount) {
+                    // Trek de kosten af
+                    resource.total -= item.cost.amount;
+                    updateProgressBar(item.cost.type);
+
+                    // Toon floating cost animatie
+                    const counter = document.querySelector(`.resource-counter-container:has([data-resource="${item.cost.type}"])`);
+                    if (counter) {
+                        const floatingCost = document.createElement('div');
+                        floatingCost.className = 'floating-cost';
+                        floatingCost.textContent = `-${item.cost.amount}`;
+                        floatingCost.style.left = '50%';
+                        floatingCost.style.top = '0';
+                        counter.appendChild(floatingCost);
+                        setTimeout(() => floatingCost.remove(), 1000);
+                    }
+
+                    // Update owned count en activeer effect
+                    item.owned++;
+                    if (item.id === 'autoCollector' && item.owned === 1) {
+                        item.effect();
+                    }
+
+                    // Speel aankoop geluid
+                    playSound(sounds.purchase);
+
+                    // Update inventory als die open is
+                    if (inventoryModal.style.display === 'flex') {
+                        updateInventoryUI();
+                    }
+                }
+            }
+            confirmModal.style.display = 'none';
+            pendingPurchase = null;
+        });
+
+        confirmNo.addEventListener('click', () => {
+            confirmModal.style.display = 'none';
+            pendingPurchase = null;
+        });
+
+        // Update de buyShopItem functie
+        function buyShopItem(itemId) {
+            const item = shopItems[itemId];
+            
+            // Voorkom aankoop als item al owned is
+            if (item.owned > 0) {
+                return; // Stop de functie als het item al owned is
+            }
+
+            const resource = resources[item.cost.type];
+            if (resource.total >= item.cost.amount) {
+                showConfirmation(item);
+            } else {
+                showError(item);
+            }
+        }
+
+        // Functie voor het tonen van de floating cost
+        function showFloatingCost(resourceType, amount) {
+            const counter = document.querySelector(`.resource-counter[data-resource="${resourceType}"]`);
+            const floatingCost = document.createElement('div');
+            floatingCost.className = 'floating-cost';
+            floatingCost.textContent = `-${amount}`;
+            
+            // Positioneer boven de resource counter
+            counter.appendChild(floatingCost);
+            
+            setTimeout(() => floatingCost.remove(), 1000);
+        }
+
+        // Error modal functionaliteit
+        const errorModal = document.getElementById('errorModal');
+        const errorDetails = document.getElementById('errorDetails');
+        const errorOk = document.getElementById('errorOk');
+
+        function showError(item) {
+            const resource = resources[item.cost.type];
+            errorDetails.textContent = `Je hebt ${resource.total} ${item.cost.type}, maar je hebt ${item.cost.amount} nodig!`;
+            errorModal.style.display = 'block';
+        }
+
+        errorOk.addEventListener('click', () => {
+            errorModal.style.display = 'none';
+        });
+
+        // Voeg deze code toe aan je bestaande script
+        const inventoryModal = document.getElementById('inventoryModal');
+        const backpackIcon = document.querySelector('.fa-briefcase').parentElement;
+        const closeInventory = document.getElementById('closeInventory');
+
+        function updateInventoryUI() {
+            const inventoryItems = document.querySelector('.inventory-items');
+            inventoryItems.innerHTML = '';
+
+            Object.values(shopItems).forEach(item => {
+                if (item.owned > 0) {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'inventory-item';
+                    
+                    let iconClass;
+                    switch(item.id) {
+                        case 'autoCollector':
+                            iconClass = 'fa-robot';
+                            break;
+                        case 'clickMultiplier':
+                            iconClass = 'fa-multiply';
+                            break;
+                        case 'speedBoost':
+                            iconClass = 'fa-bolt';
+                            break;
+                    }
+
+                    itemElement.innerHTML = `
+                        <i class="fas ${iconClass} inventory-item-image"></i>
+                        <div class="inventory-item-title">${item.title}</div>
+                        <div class="inventory-item-amount">Owned</div>
+                        <div class="inventory-item-description">${item.description}</div>
+                    `;
+                    inventoryItems.appendChild(itemElement);
+                }
+            });
+
+            if (inventoryItems.children.length === 0) {
+                inventoryItems.innerHTML = '<p style="text-align: center; color: #aaa; grid-column: 1/-1;">Geen items in inventory</p>';
+            }
+        }
+
+        backpackIcon.addEventListener('click', () => {
+            updateInventoryUI();
+            inventoryModal.style.display = 'flex';
+        });
+
+        closeInventory.addEventListener('click', () => {
+            inventoryModal.style.display = 'none';
+        });
+
+        inventoryModal.addEventListener('click', (e) => {
+            if (e.target === inventoryModal) {
+                inventoryModal.style.display = 'none';
+            }
+        });
+
+        // Update deze functie om de inventory bij te werken na een aankoop
+        confirmYes.addEventListener('click', () => {
+            if (pendingPurchase) {
+                const item = pendingPurchase;
+                const resource = resources[item.cost.type];
+
+                if (resource.total >= item.cost.amount) {
+                    resource.total -= item.cost.amount;
+                    updateProgressBar(item.cost.type);
+
+                    // Toon floating cost animatie
+                    const counter = document.querySelector(`.resource-counter-container:has([data-resource="${item.cost.type}"])`);
+                    if (counter) {
+                        const floatingCost = document.createElement('div');
+                        floatingCost.className = 'floating-cost';
+                        floatingCost.textContent = `-${item.cost.amount}`;
+                        floatingCost.style.left = '50%';
+                        floatingCost.style.top = '0';
+                        counter.appendChild(floatingCost);
+                        setTimeout(() => floatingCost.remove(), 1000);
+                    }
+
+                    item.owned++;
+                    if (item.id === 'autoCollector' && item.owned === 1) {
+                        item.effect();
+                    }
+
+                    playSound(sounds.purchase);
+
+                    // Update beide UIs
+                    updateShopUI();
+                    if (inventoryModal.style.display === 'flex') {
+                        updateInventoryUI();
+                    }
+                }
+            }
+            confirmModal.style.display = 'none';
+            pendingPurchase = null;
+        });
+
+        // Voeg deze code toe na het definiëren van de shopItems
+        document.querySelectorAll('.shop-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const itemId = item.dataset.item;
+                buyShopItem(itemId);
+            });
+        });
+
+        // Update de shop items na aankoop
+        function updateShopUI() {
+            Object.values(shopItems).forEach(item => {
+                const shopItem = document.querySelector(`.shop-item[data-item="${item.id}"]`);
+                if (shopItem) {
+                    if (item.owned > 0) {
+                        shopItem.classList.add('owned');
+                    } else {
+                        shopItem.classList.remove('owned');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
