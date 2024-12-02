@@ -472,7 +472,8 @@
                         jumpForce: -this.canvas.height * 0.016,
                         canJump: true,
                         jumpCooldown: 0,
-                        type: 'smart'
+                        type: 'smart',
+                        disabled: false
                     }
                 ];
 
@@ -508,73 +509,46 @@
 
                 // Click handler toevoegen
                 this.canvas.addEventListener('click', (e) => {
-                    if (this.gameOver) {
-                        const rect = this.canvas.getBoundingClientRect();
-                        const clickX = e.clientX - rect.left;
-                        const clickY = e.clientY - rect.top;
+                    const rect = this.canvas.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const clickY = e.clientY - rect.top;
 
+                    if (this.gameOver) {
+                        // Game over menu logica...
+                    } else if (this.victory) {
                         const centerX = this.canvas.width / 2;
                         const buttonWidth = this.canvas.width * 0.2;
                         const buttonHeight = this.canvas.height * 0.05;
-                        const buttonSpacing = this.canvas.height * 0.02;
-                        const buttonsY = this.canvas.height/2 + this.canvas.height * 0.2;
-
-                        // Check restart knop
-                        if (this.isMouseOverButton(
-                            centerX - buttonWidth - buttonSpacing,
-                            buttonsY,
-                            buttonWidth,
-                            buttonHeight
-                        )) {
-                            this.resetGame();
-                        }
+                        const buttonY = this.canvas.height/2 + this.canvas.height * 0.2;
 
                         // Check menu knop
                         if (this.isMouseOverButton(
-                            centerX + buttonSpacing,
-                            buttonsY,
+                            centerX - buttonWidth/2,
+                            buttonY,
                             buttonWidth,
                             buttonHeight
                         )) {
                             // Terug naar menu
                             document.querySelector('.game-screen').style.display = 'none';
                             document.querySelector('.menu-container').style.display = 'block';
+                            this.resetGame(); // Reset het spel voor de volgende keer
                         }
                     }
                 });
 
-                // Tutorial systeem
-                this.showingTutorial = true;
-                this.tutorialStep = 0;
-                this.tutorialSteps = [
-                    {
-                        text: "GEBRUIK PIJLTJESTOETSEN OM TE BEWEGEN",
-                        position: { x: 0.5, y: 0.4 },
-                        condition: () => this.keys['ArrowLeft'] || this.keys['ArrowRight']
-                    },
-                    {
-                        text: "DRUK SPATIE OF PIJLTJE OMHOOG OM TE SPRINGEN",
-                        position: { x: 0.5, y: 0.4 },
-                        condition: () => this.player.jumping
-                    },
-                    {
-                        text: "VERZAMEL ALLE MUNTEN",
-                        position: { x: 0.5, y: 0.4 },
-                        condition: () => this.score > 0
-                    },
-                    {
-                        text: "PAS OP VOOR DE VIJAND!",
-                        position: { x: 0.5, y: 0.4 },
-                        condition: () => this.lives < 3
-                    }
-                ];
+                // Victory systeem
+                this.victory = false;
+                this.victoryFadeAlpha = 0;
+                this.victoryTextScale = 0;
 
-                // Tijdelijk de vijand uitschakelen tijdens tutorial
-                if (this.showingTutorial) {
-                    this.enemies.forEach(enemy => {
-                        enemy.disabled = true;
-                    });
-                }
+                // Audio systeem
+                this.gameMusic = new Audio('assets/ingame.mp3');
+                this.gameMusic.loop = true;
+                this.menuMusic = new Audio('assets/menu.mp3');
+                this.menuMusic.loop = true;
+
+                // Start menu muziek
+                this.menuMusic.play();
             }
 
             resizeCanvas() {
@@ -583,71 +557,70 @@
             }
 
             start() {
+                // Stop menu muziek en start game muziek
+                this.menuMusic.pause();
+                this.menuMusic.currentTime = 0;
+                this.gameMusic.play();
+                
                 this.gameLoop();
             }
 
             update() {
-                // Update tutorial voor andere updates
-                if (this.showingTutorial) {
-                    this.updateTutorial();
-                }
-
-                // Voeg game over update toe
                 this.updateGameOver();
+                this.updateVictory();
                 
-                // Alleen updaten als niet game over
-                if (!this.gameOver) {
-                // Alleen beweging toestaan als controls niet locked zijn
-                if (!this.controlsLocked) {
-                // Speler beweging
-                if (this.keys['ArrowLeft']) {
-                    this.player.x -= this.moveSpeed;
-                }
-                if (this.keys['ArrowRight']) {
-                    this.player.x += this.moveSpeed;
-                }
-                if ((this.keys['Space'] || this.keys['ArrowUp']) && !this.player.jumping) {
-                    this.player.speedY = this.jumpForce;
-                    this.player.jumping = true;
+                if (!this.gameOver && !this.victory) {
+                    // Alleen updaten als niet game over
+                    if (!this.controlsLocked) {
+                    // Speler beweging
+                    if (this.keys['ArrowLeft']) {
+                        this.player.x -= this.moveSpeed;
                     }
-                } else {
-                    // Reset alle beweging tijdens control lock
-                    this.player.speedY = 0;
-                }
-
-                // Update control lock timer
-                if (this.controlsLocked) {
-                    this.controlLockTimer--;
-                    if (this.controlLockTimer <= 0) {
-                        this.controlsLocked = false;
+                    if (this.keys['ArrowRight']) {
+                        this.player.x += this.moveSpeed;
                     }
-                }
+                    if ((this.keys['Space'] || this.keys['ArrowUp']) && !this.player.jumping) {
+                        this.player.speedY = this.jumpForce;
+                        this.player.jumping = true;
+                        }
+                    } else {
+                        // Reset alle beweging tijdens control lock
+                        this.player.speedY = 0;
+                    }
 
-                // Zwaartekracht
-                this.player.speedY += this.gravity;
-                this.player.y += this.player.speedY;
-
-                // Platform collision
-                this.platforms.forEach(platform => {
-                    if (this.collision(this.player, platform)) {
-                        if (this.player.speedY > 0) {
-                            this.player.y = platform.y - this.player.height;
-                            this.player.speedY = 0;
-                            this.player.jumping = false;
+                    // Update control lock timer
+                    if (this.controlsLocked) {
+                        this.controlLockTimer--;
+                        if (this.controlLockTimer <= 0) {
+                            this.controlsLocked = false;
                         }
                     }
-                });
 
-                // Voeg coin check toe aan update
-                this.checkCoinCollision();
+                    // Zwaartekracht
+                    this.player.speedY += this.gravity;
+                    this.player.y += this.player.speedY;
 
-                // Scherm grenzen
-                if (this.player.x < 0) this.player.x = 0;
-                if (this.player.x > this.canvas.width - this.player.width) {
-                    this.player.x = this.canvas.width - this.player.width;
-                }
+                    // Platform collision
+                    this.platforms.forEach(platform => {
+                        if (this.collision(this.player, platform)) {
+                            if (this.player.speedY > 0) {
+                                this.player.y = platform.y - this.player.height;
+                                this.player.speedY = 0;
+                                this.player.jumping = false;
+                            }
+                        }
+                    });
 
-                this.updateEnemies();
+                    // Voeg coin check toe aan update
+                    this.checkCoinCollision();
+
+                    // Scherm grenzen
+                    if (this.player.x < 0) this.player.x = 0;
+                    if (this.player.x > this.canvas.width - this.player.width) {
+                        this.player.x = this.canvas.width - this.player.width;
+                    }
+
+                    this.updateEnemies();
                 }
             }
 
@@ -839,40 +812,53 @@
                     );
                 }
 
-                // Teken tutorial overlay
-                if (this.showingTutorial && this.tutorialStep < this.tutorialSteps.length) {
-                    const step = this.tutorialSteps[this.tutorialStep];
-                    
-                    // Semi-transparante overlay
-                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                // Victory overlay
+                if (this.victory) {
+                    // Fade effect
+                    this.ctx.fillStyle = `rgba(0, 0, 0, ${this.victoryFadeAlpha})`;
                     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-                    // Tutorial tekst
-                    this.ctx.fillStyle = '#fff';
-                    this.ctx.font = `${this.canvas.width * 0.02}px 'Press Start 2P'`;
+                    // Victory text
+                    const centerX = this.canvas.width / 2;
+                    const centerY = this.canvas.height / 2;
+
+                    this.ctx.font = `${this.canvas.width * 0.05 * this.victoryTextScale}px 'Press Start 2P'`;
                     this.ctx.textAlign = 'center';
                     this.ctx.textBaseline = 'middle';
-                    
-                    // Teken tekst met glitch effect
-                    const x = this.canvas.width * step.position.x;
-                    const y = this.canvas.height * step.position.y;
-                    
-                    // Glitch effect
+
+                    // Glitch effect voor victory tekst
                     if (Math.random() < 0.1) {
                         this.ctx.fillStyle = '#00ffff';
-                        this.ctx.fillText(step.text, x + 2, y);
+                        this.ctx.fillText('OVERWINNING!', centerX + 5, centerY);
                         this.ctx.fillStyle = '#ff00ff';
-                        this.ctx.fillText(step.text, x - 2, y);
+                        this.ctx.fillText('OVERWINNING!', centerX - 5, centerY);
                     }
-                    
-                    this.ctx.fillStyle = '#fff';
-                    this.ctx.fillText(step.text, x, y);
 
-                    // Druk op een toets indicator
-                    this.ctx.font = `${this.canvas.width * 0.015}px 'Press Start 2P'`;
-                    this.ctx.fillText('DRUK OP DE AANGEGEVEN TOETSEN OM DOOR TE GAAN', 
-                        this.canvas.width * 0.5, 
-                        this.canvas.height * 0.8
+                    this.ctx.fillStyle = '#ffff00'; // Goud kleur voor overwinning
+                    this.ctx.fillText('OVERWINNING!', centerX, centerY);
+
+                    // Score text
+                    this.ctx.font = `${this.canvas.width * 0.02 * this.victoryTextScale}px 'Press Start 2P'`;
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.fillText(`SCORE: ${this.score}`, centerX, centerY + this.canvas.height * 0.1);
+
+                    // Menu knop
+                    const buttonWidth = this.canvas.width * 0.2;
+                    const buttonHeight = this.canvas.height * 0.05;
+                    const buttonY = centerY + this.canvas.height * 0.2;
+
+                    this.drawButton(
+                        centerX - buttonWidth/2,
+                        buttonY,
+                        buttonWidth,
+                        buttonHeight,
+                        'MENU',
+                        this.isMouseOverButton(
+                            centerX - buttonWidth/2,
+                            buttonY,
+                            buttonWidth,
+                            buttonHeight
+                        )
                     );
                 }
             }
@@ -894,6 +880,11 @@
                     })) {
                         coin.collected = true;
                         this.score += 1;
+
+                        // Check of alle munten verzameld zijn
+                        if (this.coins.every(c => c.collected)) {
+                            this.startVictory();
+                        }
                     }
                 });
             }
@@ -1158,6 +1149,11 @@
                 this.coins.forEach(coin => {
                     coin.collected = false;
                 });
+
+                // Stop game muziek en start menu muziek
+                this.gameMusic.pause();
+                this.gameMusic.currentTime = 0;
+                this.menuMusic.play();
             }
 
             // Helper functie voor knoppen
@@ -1186,24 +1182,27 @@
                        this.mouseY <= y + height;
             }
 
-            updateTutorial() {
-                if (this.tutorialStep < this.tutorialSteps.length) {
-                    const currentStep = this.tutorialSteps[this.tutorialStep];
-                    if (currentStep.condition()) {
-                        this.tutorialStep++;
-                        if (this.tutorialStep === this.tutorialSteps.length) {
-                            this.showingTutorial = false;
-                            // Activeer vijanden na tutorial
-                            this.enemies.forEach(enemy => {
-                                enemy.disabled = false;
-                            });
-                        }
-                    }
+            // Victory functies
+            startVictory() {
+                this.victory = true;
+                this.victoryFadeAlpha = 0;
+                this.victoryTextScale = 0;
+                this.controlsLocked = true;
+            }
+
+            updateVictory() {
+                if (this.victory) {
+                    this.victoryFadeAlpha = Math.min(this.victoryFadeAlpha + 0.01, 0.7);
+                    this.victoryTextScale = Math.min(this.victoryTextScale + 0.05, 1);
                 }
             }
         }
 
         // Loading screen en game start logica
+        const menuMusic = new Audio('assets/menu.mp3');
+        menuMusic.loop = true;
+        menuMusic.play();
+
         document.querySelector('a[href="#"].menu-link').addEventListener('click', function(e) {
             e.preventDefault();
             const loadingScreen = document.querySelector('.loading-screen');
@@ -1212,6 +1211,10 @@
             let progress = 0;
 
             loadingScreen.style.display = 'flex';
+            
+            // Stop menu muziek wanneer het spel start
+            menuMusic.pause();
+            menuMusic.currentTime = 0;
             
             const loadingInterval = setInterval(() => {
                 progress += Math.random() * 15;
