@@ -1,1454 +1,409 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Pixel Menu</title>
+    <title>The Unhallowed Parish</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            background-color: #000;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Press Start 2P', cursive;
-        }
-
-        .menu-container {
-            background-color: #111;
-            padding: 2rem;
-            border: 4px solid #fff;
-            box-shadow: 0 0 0 4px #111,
-                       0 0 0 8px #fff;
-        }
-
-        .menu-title {
-            color: #fff;
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            text-shadow: 2px 2px #ff00ff;
-            cursor: pointer;
-            animation: staticGlitch 2s infinite;
-            position: relative;
-        }
-
-        .menu-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .menu-item {
-            margin: 1rem 0;
-        }
-
-        .menu-link {
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.2rem;
-            padding: 0.5rem 1rem;
-            display: block;
-            text-align: center;
-            border: 2px solid #fff;
-            transition: all 0.3s ease;
+            font-family: 'MedievalSharp', cursive;
+            color: #c9a959;
             position: relative;
             overflow: hidden;
         }
 
-        .menu-link:before {
-            content: '>';
-            position: absolute;
-            left: -20px;
+        .menu-container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 2rem;
+            border: 2px solid #634d1d;
+            box-shadow: 0 0 20px rgba(201, 169, 89, 0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            animation: glowingTitle 2s ease-in-out infinite alternate;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            color: #c9a959;
+        }
+
+        @keyframes glowingTitle {
+            from {
+                text-shadow: 0 0 10px rgba(201, 169, 89, 0.3),
+                            0 0 20px rgba(201, 169, 89, 0.3),
+                            0 0 30px rgba(201, 169, 89, 0.3);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(201, 169, 89, 0.7),
+                            0 0 30px rgba(201, 169, 89, 0.7),
+                            0 0 40px rgba(201, 169, 89, 0.7);
+            }
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            align-items: center;
+        }
+
+        .menu-button {
+            background-color: transparent;
+            border: 1px solid #634d1d;
+            color: #c9a959;
+            padding: 1rem 2rem;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.2rem;
+            cursor: pointer;
             transition: all 0.3s ease;
-            color: #ff00ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            width: 280px;
         }
 
-        .menu-link:hover {
-            background-color: #fff;
-            color: #000;
-            transform: scale(1.05);
-        }
-
-        .menu-link:hover:before {
-            left: 10px;
-        }
-
-        @keyframes staticGlitch {
-            0% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-            20% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-            21% { 
-                text-shadow: 3px 0px #ff00ff, -2px 0px #00ffff;
-                transform: skew(0.5deg);
-            }
-            22% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-            50% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-            51% { 
-                text-shadow: -2px 1px #ff00ff, 1px -1px #00ffff;
-                transform: skew(-0.5deg);
-            }
-            52% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-            85% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-            86% { 
-                text-shadow: 1px -1px #ff00ff, -1px 1px #00ffff;
-                transform: skew(0.2deg);
-            }
-            87% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-            100% { 
-                text-shadow: 2px 2px #ff00ff;
-                transform: skew(0deg);
-            }
-        }
-
-        .menu-title::before {
+        .menu-button::before {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(255, 255, 255, 0.03) 0px,
-                rgba(255, 255, 255, 0.03) 1px,
-                transparent 1px,
-                transparent 2px
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(201, 169, 89, 0.1);
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .menu-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .menu-button:hover {
+            border-color: #c9a959;
+            text-shadow: 0 0 5px rgba(201, 169, 89, 0.5);
+            transform: scale(1.02);
+        }
+
+        .menu-button:active {
+            transform: scale(0.98);
+        }
+
+        .decorative-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #634d1d, transparent);
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .decorative-line::before {
+            content: '❖';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #634d1d;
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 0 10px;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        .menu-container {
+            animation: flicker 4s infinite;
+        }
+
+        #gameScreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        #game-content {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        #player-container {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            transform-origin: center;
+            z-index: 4;
+        }
+
+        #player {
+            width: 100%;
+            height: 100%;
+            background-color: #c9a959;
+            animation: breathing 2s ease-in-out infinite;
+        }
+
+        @keyframes breathing {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #light-cone {
+            position: absolute;
+            top: 0;
+            left: -84px;
+            width: 200px;
+            height: 400px;
+            clip-path: polygon(
+                45% 0%,
+                55% 0%,
+                90% 100%,
+                10% 100%
             );
+            background: linear-gradient(
+                to bottom,
+                rgba(201, 169, 89, 0.5) 0%,
+                rgba(201, 169, 89, 0.4) 20%,
+                rgba(201, 169, 89, 0.3) 40%,
+                rgba(201, 169, 89, 0.2) 60%,
+                rgba(201, 169, 89, 0.1) 80%,
+                transparent 100%
+            );
+            transform-origin: 50% 0%;
             pointer-events: none;
-            animation: staticNoise 0.5s steps(4) infinite;
-            opacity: 0.3;
+            z-index: 1;
+            filter: blur(12px);
         }
 
-        @keyframes staticNoise {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-4px); }
-        }
-
-        .menu-title:hover {
-            animation: none;
-        }
-
-        /* Loading screen styles */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 1000;
-        }
-
-        .loading-text {
-            color: #fff;
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            animation: blink 1s infinite;
-        }
-
-        .loading-bar-container {
-            width: 200px;
-            height: 20px;
-            border: 4px solid #fff;
-            padding: 2px;
-            position: relative;
-        }
-
-        .loading-bar {
-            height: 100%;
-            width: 0%;
-            background-color: #ff00ff;
-            transition: width 0.5s ease;
-        }
-
-        .loading-pixels {
+        .enemy-circle {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-        }
-
-        .pixel {
-            flex: 1;
-            border-right: 2px solid #000;
-        }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* Game canvas styles aanpassen */
-        .game-screen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 2000;
-        }
-
-        #gameCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-
-        .screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Press Start 2P', cursive;
-            color: #fff;
-        }
-
-        .screen-title {
-            font-size: 2rem;
-            margin-bottom: 3rem;
-            text-shadow: 2px 2px #ff00ff;
-            animation: staticGlitch 2s infinite;
-        }
-
-        .screen-content {
-            position: relative;
-            background-color: #111;
-            padding: 2rem;
-            border: 4px solid #fff;
-            box-shadow: 0 0 0 4px #111, 0 0 0 8px #fff;
-            width: 80%;
-            max-width: 600px;
-            margin-top: 0;
-        }
-
-        .option-item {
-            margin: 2rem 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .slider {
-            width: 200px;
+            width: 20px;
             height: 20px;
-            background: #333;
-            border: 2px solid #fff;
-            position: relative;
+            background-color: #ff3333;
+            border-radius: 50%;
+            z-index: 1;
         }
 
-        .slider-fill {
-            width: 50%;
-            height: 100%;
-            background: #ff00ff;
-        }
-
-        .pixel-select {
+        #darkness-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background: #000;
-            border: 2px solid #fff;
-            color: #fff;
-            padding: 0.5rem;
-            font-family: 'Press Start 2P', cursive;
-            cursor: pointer;
+            z-index: 3;
+            pointer-events: none;
         }
 
-        .credit-item {
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .credit-item h2 {
-            color: #ff00ff;
-            margin-bottom: 1rem;
-        }
-
-        .exit-content {
-            text-align: center;
-        }
-
-        .exit-buttons {
-            margin-top: 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        .back-button, .exit-yes, .exit-no {
-            background: #fff;
-            border: 2px solid #ff00ff;
-            padding: 1rem 2rem;
-            font-family: 'Press Start 2P', cursive;
-            cursor: pointer;
-            margin-top: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover, .exit-yes:hover, .exit-no:hover {
-            background: #ff00ff;
-            color: #fff;
-        }
-
-        /* Voeg CSS toe voor het kruisje */
-        .close-button {
+        #light-mask {
             position: absolute;
-            top: -20px;
-            right: -20px;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 20px;
-            color: #fff;
-            border: 2px solid #ff00ff;
-            background: #111;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .close-button:hover {
-            background: #ff00ff;
-            transform: scale(1.1);
-        }
-
-        /* Pas de screen-content padding aan voor het kruisje */
-        .screen-content {
-            position: relative;
-            margin-top: 40px;
+            top: 0;
+            left: -84px;
+            width: 200px;
+            height: 400px;
+            background: radial-gradient(
+                circle at 50% 0%,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 0.8) 40%,
+                transparent 100%
+            );
+            transform-origin: 50% 0%;
+            mix-blend-mode: destination-out;
+            pointer-events: none;
+            clip-path: polygon(
+                45% 0%,
+                55% 0%,
+                90% 100%,
+                10% 100%
+            );
         }
     </style>
 </head>
 <body>
     <div class="menu-container">
-        <h1 class="menu-title">HOOFDMENU</h1>
-        <ul class="menu-list">
-            <li class="menu-item">
-                <a href="#" class="menu-link">START SPEL</a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">OPTIES</a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">CREDITS</a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">AFSLUITEN</a>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Loading screen toevoegen -->
-    <div class="loading-screen">
-        <div class="loading-text">LOADING...</div>
-        <div class="loading-bar-container">
-            <div class="loading-bar"></div>
-            <div class="loading-pixels">
-                <div class="pixel"></div>
-                <div class="pixel"></div>
-                <div class="pixel"></div>
-                <div class="pixel"></div>
-                <div class="pixel"></div>
-                <div class="pixel"></div>
-                <div class="pixel"></div>
-                <div class="pixel"></div>
-            </div>
+        <h1>The Unhallowed Parish</h1>
+        <div class="decorative-line"></div>
+        <div class="menu-items">
+            <button class="menu-button" onclick="startGame()">Nieuw Spel</button>
+            <button class="menu-button" onclick="alert('Geen opgeslagen spel gevonden')">Doorgaan</button>
+            <button class="menu-button" onclick="alert('Instellingen komen binnenkort...')">Instellingen</button>
+            <button class="menu-button" onclick="alert('Gemaakt door het ontwikkelteam')">Credits</button>
+            <button class="menu-button" onclick="if(confirm('Weet je zeker dat je wilt afsluiten?')) window.close()">Afsluiten</button>
         </div>
     </div>
 
-    <!-- Game screen toevoegen -->
-    <div class="game-screen">
-        <canvas id="gameCanvas" width="640" height="480"></canvas>
+    <div id="gameScreen">
+        <div id="game-content">
+            <div id="enemies"></div>
+        </div>
+        <div id="darkness-overlay">
+            <div id="light-mask"></div>
+        </div>
+        <div id="player-container">
+            <div id="light-cone"></div>
+            <div id="player"></div>
+        </div>
     </div>
 
     <script>
-        // Game logica
-        class Game {
-            constructor() {
-                this.canvas = document.getElementById('gameCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                
-                // Canvas grootte aanpassen aan venstergrootte
-                this.resizeCanvas();
-                window.addEventListener('resize', () => this.resizeCanvas());
+        let playerContainer;
+        let playerX = 100;
+        let playerY = 100;
+        let playerRotation = 0;
+        const SPEED = 5;
+        const ROTATION_SPEED = 3;
+        let keys = {};
+        let enemies = [];
 
-                // Speler kleiner maken (van 5% naar 3% van schermbreedte)
-                this.player = {
-                    x: this.canvas.width * 0.1,
-                    y: this.canvas.height * 0.5,
-                    width: this.canvas.width * 0.03,  // Verkleind van 0.05 naar 0.03
-                    height: this.canvas.width * 0.03, // Verkleind van 0.05 naar 0.03
-                    speedY: 0,
-                    jumping: false
-                };
-
-                // Minder platforms
-                this.platforms = [
-                    // Basis grond (extra breed voor volledige dekking)
-                    { x: 0, y: this.canvas.height * 0.9, width: this.canvas.width * 2, height: this.canvas.height * 0.1 }, // Breedte vergroot naar 200%
-                    
-                    // Enkele strategisch geplaatste platforms
-                    { x: this.canvas.width * 0.2, y: this.canvas.height * 0.7, width: this.canvas.width * 0.15, height: this.canvas.height * 0.02 },
-                    { x: this.canvas.width * 0.5, y: this.canvas.height * 0.6, width: this.canvas.width * 0.15, height: this.canvas.height * 0.02 },
-                    { x: this.canvas.width * 0.8, y: this.canvas.height * 0.7, width: this.canvas.width * 0.15, height: this.canvas.height * 0.02 },
-                    { x: this.canvas.width * 0.4, y: this.canvas.height * 0.4, width: this.canvas.width * 0.15, height: this.canvas.height * 0.02 }
-                ];
-
-                // Coins toevoegen
-                this.coins = [
-                    { x: this.canvas.width * 0.25, y: this.canvas.height * 0.6, size: this.canvas.width * 0.02, collected: false },
-                    { x: this.canvas.width * 0.55, y: this.canvas.height * 0.5, size: this.canvas.width * 0.02, collected: false },
-                    { x: this.canvas.width * 0.85, y: this.canvas.height * 0.6, size: this.canvas.width * 0.02, collected: false },
-                    { x: this.canvas.width * 0.45, y: this.canvas.height * 0.3, size: this.canvas.width * 0.02, collected: false }
-                ];
-
-                // Fijnafstemming van de bewegingsparameters
-                this.gravity = this.canvas.height * 0.0008;    // Iets lichtere zwaartekracht
-                this.jumpForce = -this.canvas.height * 0.016;  // Iets sterkere sprong
-                this.moveSpeed = this.canvas.width * 0.007;    // Iets langzamere horizontale beweging
-                this.keys = {};
-
-                // Event listeners
-                window.addEventListener('keydown', (e) => this.keys[e.code] = true);
-                window.addEventListener('keyup', (e) => this.keys[e.code] = false);
-
-                // Score bijhouden
-                this.score = 0;
-
-                // Enemies toevoegen met verbeterd gedrag en startpositie onthouden
-                this.enemies = [
-                    {   // Enkele slimme vijand met vaste instellingen
-                        x: this.canvas.width * 0.6,
-                        y: this.canvas.height * 0.7,
-                        startX: this.canvas.width * 0.6,
-                        startY: this.canvas.height * 0.7,
-                        width: this.canvas.width * 0.025,
-                        height: this.canvas.width * 0.025,
-                        speedX: 0,
-                        speedY: 0,
-                        detectionRange: this.canvas.width * 0.4,
-                        chaseSpeed: this.canvas.width * 0.003,
-                        jumpForce: -this.canvas.height * 0.016,
-                        canJump: true,
-                        jumpCooldown: 0,
-                        type: 'smart',
-                        disabled: false
-                    }
-                ];
-
-                // Levens toevoegen
-                this.lives = 3;
-
-                // Hartanimatie systeem
-                this.heartParticles = [];
-                this.particleLifetime = 60; // Aantal frames dat de animatie duurt
-
-                // Respawn en onkwetsbaarheid systeem
-                this.isInvulnerable = false;
-                this.invulnerabilityTime = 120; // 2 seconden (60 fps)
-                this.invulnerabilityTimer = 0;
-                this.controlsLocked = false;
-                this.controlLockTime = 60; // 1 seconde cooldown
-                this.controlLockTimer = 0;
-                this.respawnParticles = [];
-
-                // Game over systeem
-                this.gameOver = false;
-                this.fadeOutAlpha = 0;
-                this.gameOverTextScale = 0;
-
-                // Mouse tracking toevoegen
-                this.mouseX = 0;
-                this.mouseY = 0;
-                this.canvas.addEventListener('mousemove', (e) => {
-                    const rect = this.canvas.getBoundingClientRect();
-                    this.mouseX = e.clientX - rect.left;
-                    this.mouseY = e.clientY - rect.top;
+        function createEnemies() {
+            const enemiesContainer = document.getElementById('enemies');
+            for (let i = 0; i < 3; i++) {
+                const enemy = document.createElement('div');
+                enemy.className = 'enemy-circle';
+                // Random positie binnen het scherm
+                const x = Math.random() * (window.innerWidth - 20);
+                const y = Math.random() * (window.innerHeight - 20);
+                enemy.style.left = x + 'px';
+                enemy.style.top = y + 'px';
+                enemiesContainer.appendChild(enemy);
+                enemies.push({
+                    element: enemy,
+                    x: x,
+                    y: y
                 });
-
-                // Click handler toevoegen
-                this.canvas.addEventListener('click', (e) => {
-                    const rect = this.canvas.getBoundingClientRect();
-                    const clickX = e.clientX - rect.left;
-                    const clickY = e.clientY - rect.top;
-
-                    if (this.gameOver) {
-                        // Game over menu logica...
-                    } else if (this.victory) {
-                        const centerX = this.canvas.width / 2;
-                        const buttonWidth = this.canvas.width * 0.2;
-                        const buttonHeight = this.canvas.height * 0.05;
-                        const buttonY = this.canvas.height/2 + this.canvas.height * 0.2;
-
-                        // Check menu knop
-                        if (this.isMouseOverButton(
-                            centerX - buttonWidth/2,
-                            buttonY,
-                            buttonWidth,
-                            buttonHeight
-                        )) {
-                            // Terug naar menu
-                            document.querySelector('.game-screen').style.display = 'none';
-                            document.querySelector('.menu-container').style.display = 'block';
-                            this.resetGame(); // Reset het spel voor de volgende keer
-                        }
-                    }
-                });
-
-                // Victory systeem
-                this.victory = false;
-                this.victoryFadeAlpha = 0;
-                this.victoryTextScale = 0;
-
-                // Audio systeem
-                this.gameMusic = new Audio('assets/ingame.mp3');
-                this.gameMusic.loop = true;
-                this.menuMusic = new Audio('assets/menu.mp3');
-                this.menuMusic.loop = true;
-
-                // Start menu muziek
-                this.menuMusic.play();
-            }
-
-            resizeCanvas() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-            }
-
-            start() {
-                // Stop menu muziek en start game muziek
-                this.menuMusic.pause();
-                this.menuMusic.currentTime = 0;
-                this.gameMusic.play();
-                
-                this.gameLoop();
-            }
-
-            update() {
-                this.updateGameOver();
-                this.updateVictory();
-                
-                if (!this.gameOver && !this.victory) {
-                    // Alleen updaten als niet game over
-                    if (!this.controlsLocked) {
-                    // Speler beweging
-                    if (this.keys['ArrowLeft']) {
-                        this.player.x -= this.moveSpeed;
-                    }
-                    if (this.keys['ArrowRight']) {
-                        this.player.x += this.moveSpeed;
-                    }
-                    if ((this.keys['Space'] || this.keys['ArrowUp']) && !this.player.jumping) {
-                        this.player.speedY = this.jumpForce;
-                        this.player.jumping = true;
-                        }
-                    } else {
-                        // Reset alle beweging tijdens control lock
-                        this.player.speedY = 0;
-                    }
-
-                    // Update control lock timer
-                    if (this.controlsLocked) {
-                        this.controlLockTimer--;
-                        if (this.controlLockTimer <= 0) {
-                            this.controlsLocked = false;
-                        }
-                    }
-
-                    // Zwaartekracht
-                    this.player.speedY += this.gravity;
-                    this.player.y += this.player.speedY;
-
-                    // Platform collision
-                    this.platforms.forEach(platform => {
-                        if (this.collision(this.player, platform)) {
-                            if (this.player.speedY > 0) {
-                                this.player.y = platform.y - this.player.height;
-                                this.player.speedY = 0;
-                                this.player.jumping = false;
-                            }
-                        }
-                    });
-
-                    // Voeg coin check toe aan update
-                    this.checkCoinCollision();
-
-                    // Scherm grenzen
-                    if (this.player.x < 0) this.player.x = 0;
-                    if (this.player.x > this.canvas.width - this.player.width) {
-                        this.player.x = this.canvas.width - this.player.width;
-                    }
-
-                    this.updateEnemies();
-                }
-            }
-
-            collision(rect1, rect2) {
-                return rect1.x < rect2.x + rect2.width &&
-                       rect1.x + rect1.width > rect2.x &&
-                       rect1.y < rect2.y + rect2.height &&
-                       rect1.y + rect1.height > rect2.y;
-            }
-
-            draw() {
-                // Achtergrond
-                this.ctx.fillStyle = '#000';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-                // Platforms
-                this.ctx.fillStyle = '#ff00ff';
-                this.platforms.forEach(platform => {
-                    this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-                });
-
-                // Coins tekenen
-                this.ctx.fillStyle = '#ffff00';
-                this.coins.forEach(coin => {
-                    if (!coin.collected) {
-                        this.ctx.beginPath();
-                        this.ctx.arc(
-                            coin.x + coin.size/2,
-                            coin.y + coin.size/2,
-                            coin.size/2,
-                            0,
-                            Math.PI * 2
-                        );
-                        this.ctx.fill();
-                    }
-                });
-
-                // Score indicator met vaste positie
-                this.ctx.fillStyle = '#fff';
-                this.ctx.font = `${this.canvas.width * 0.015}px 'Press Start 2P'`;
-                this.ctx.textAlign = 'left';
-                this.ctx.textBaseline = 'top';
-                this.ctx.fillText(
-                    `COINS: ${this.score}`,
-                    20,
-                    20
-                );
-
-                // Speler
-                if (!this.isInvulnerable || Math.floor(this.invulnerabilityTimer / 5) % 2) {
-                this.ctx.fillStyle = '#fff';
-                this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
-                }
-
-                // Enemies tekenen
-                this.ctx.fillStyle = '#ff0000';
-                this.enemies.forEach(enemy => {
-                    this.ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-                    
-                    // Debug: teken detectie bereik voor chase vijanden
-                    if (enemy.type === 'chase') {
-                        this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.2)';
-                        this.ctx.beginPath();
-                        this.ctx.arc(
-                            enemy.x + enemy.width/2,
-                            enemy.y + enemy.height/2,
-                            enemy.detectionRange,
-                            0,
-                            Math.PI * 2
-                        );
-                        this.ctx.stroke();
-                    }
-                });
-
-                // Teken de harten in de rechterbovenhoek
-                const heartSize = this.canvas.width * 0.02;
-                const heartSpacing = heartSize * 1.5;
-                const startX = this.canvas.width - (heartSize * 3 + heartSpacing * 2) - heartSize/2;
-                const startY = this.canvas.height * 0.03;
-
-                // Teken eerst alle lege harten
-                for (let i = 0; i < 3; i++) {
-                    this.drawPixelHeart(
-                        startX + (heartSize + heartSpacing) * i,
-                        startY,
-                        heartSize,
-                        true // Teken als leeg hart
-                    );
-                }
-
-                // Teken daarna de volle harten over de lege heen
-                for (let i = 0; i < this.lives; i++) {
-                    this.drawPixelHeart(
-                        startX + (heartSize + heartSpacing) * i,
-                        startY,
-                        heartSize,
-                        false // Teken als vol hart
-                    );
-                }
-
-                // Teken hartdeeltjes
-                this.heartParticles.forEach(particle => {
-                    this.ctx.fillStyle = `rgba(255, 0, 0, ${particle.alpha})`;
-                    this.ctx.fillRect(
-                        particle.x,
-                        particle.y,
-                        particle.size,
-                        particle.size
-                    );
-                });
-
-                // Teken respawn particles
-                this.respawnParticles.forEach(particle => {
-                    this.ctx.fillStyle = particle.color + Math.floor((particle.life / particle.maxLife) * 255).toString(16).padStart(2, '0');
-                    this.ctx.fillRect(
-                        particle.x,
-                        particle.y,
-                        particle.size,
-                        particle.size
-                    );
-                });
-
-                // Game over overlay
-                if (this.gameOver) {
-                    // Fade out effect
-                    this.ctx.fillStyle = `rgba(0, 0, 0, ${this.fadeOutAlpha})`;
-                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-                    // Game over text
-                    this.ctx.fillStyle = '#ff0000';
-                    this.ctx.font = `${this.canvas.width * 0.05 * this.gameOverTextScale}px 'Press Start 2P'`;
-                    this.ctx.textAlign = 'center';
-                    this.ctx.textBaseline = 'middle';
-                    
-                    // Teken tekst met glitch effect
-                    const gameOverText = "GAME OVER";
-                    const centerX = this.canvas.width / 2;
-                    const centerY = this.canvas.height / 2;
-                    
-                    // Glitch effect
-                    if (Math.random() < 0.1) {
-                        this.ctx.fillStyle = '#00ffff';
-                        this.ctx.fillText(gameOverText, centerX + 5, centerY);
-                        this.ctx.fillStyle = '#ff00ff';
-                        this.ctx.fillText(gameOverText, centerX - 5, centerY);
-                    }
-                    
-                    this.ctx.fillStyle = '#ffffff';
-                    this.ctx.fillText(gameOverText, centerX, centerY);
-
-                    // Score text
-                    this.ctx.font = `${this.canvas.width * 0.02 * this.gameOverTextScale}px 'Press Start 2P'`;
-                    this.ctx.fillText(`SCORE: ${this.score}`, centerX, centerY + this.canvas.height * 0.1);
-
-                    // Game over knoppen
-                    const buttonWidth = this.canvas.width * 0.2;
-                    const buttonHeight = this.canvas.height * 0.05;
-                    const buttonSpacing = this.canvas.height * 0.02;
-                    const buttonsY = centerY + this.canvas.height * 0.2;
-
-                    // Restart knop
-                    this.drawButton(
-                        centerX - buttonWidth - buttonSpacing,
-                        buttonsY,
-                        buttonWidth,
-                        buttonHeight,
-                        'RESTART',
-                        this.isMouseOverButton(
-                            centerX - buttonWidth - buttonSpacing,
-                            buttonsY,
-                            buttonWidth,
-                            buttonHeight
-                        )
-                    );
-
-                    // Menu knop
-                    this.drawButton(
-                        centerX + buttonSpacing,
-                        buttonsY,
-                        buttonWidth,
-                        buttonHeight,
-                        'MENU',
-                        this.isMouseOverButton(
-                            centerX + buttonSpacing,
-                            buttonsY,
-                            buttonWidth,
-                            buttonHeight
-                        )
-                    );
-                }
-
-                // Victory overlay
-                if (this.victory) {
-                    // Fade effect
-                    this.ctx.fillStyle = `rgba(0, 0, 0, ${this.victoryFadeAlpha})`;
-                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-                    // Victory text
-                    const centerX = this.canvas.width / 2;
-                    const centerY = this.canvas.height / 2;
-
-                    this.ctx.font = `${this.canvas.width * 0.05 * this.victoryTextScale}px 'Press Start 2P'`;
-                    this.ctx.textAlign = 'center';
-                    this.ctx.textBaseline = 'middle';
-
-                    // Glitch effect voor victory tekst
-                    if (Math.random() < 0.1) {
-                        this.ctx.fillStyle = '#00ffff';
-                        this.ctx.fillText('OVERWINNING!', centerX + 5, centerY);
-                        this.ctx.fillStyle = '#ff00ff';
-                        this.ctx.fillText('OVERWINNING!', centerX - 5, centerY);
-                    }
-
-                    this.ctx.fillStyle = '#ffff00'; // Goud kleur voor overwinning
-                    this.ctx.fillText('OVERWINNING!', centerX, centerY);
-
-                    // Score text
-                    this.ctx.font = `${this.canvas.width * 0.02 * this.victoryTextScale}px 'Press Start 2P'`;
-                    this.ctx.fillStyle = '#ffffff';
-                    this.ctx.fillText(`SCORE: ${this.score}`, centerX, centerY + this.canvas.height * 0.1);
-
-                    // Menu knop
-                    const buttonWidth = this.canvas.width * 0.2;
-                    const buttonHeight = this.canvas.height * 0.05;
-                    const buttonY = centerY + this.canvas.height * 0.2;
-
-                    this.drawButton(
-                        centerX - buttonWidth/2,
-                        buttonY,
-                        buttonWidth,
-                        buttonHeight,
-                        'MENU',
-                        this.isMouseOverButton(
-                            centerX - buttonWidth/2,
-                            buttonY,
-                            buttonWidth,
-                            buttonHeight
-                        )
-                    );
-                }
-            }
-
-            gameLoop() {
-                this.update();
-                this.draw();
-                requestAnimationFrame(() => this.gameLoop());
-            }
-
-            // Coin collision check toevoegen
-            checkCoinCollision() {
-                this.coins.forEach(coin => {
-                    if (!coin.collected && this.collision(this.player, {
-                        x: coin.x,
-                        y: coin.y,
-                        width: coin.size,
-                        height: coin.size
-                    })) {
-                        coin.collected = true;
-                        this.score += 1;
-
-                        // Check of alle munten verzameld zijn
-                        if (this.coins.every(c => c.collected)) {
-                            this.startVictory();
-                        }
-                    }
-                });
-            }
-
-            updateEnemies() {
-                this.enemies.forEach(enemy => {
-                    // Zwaartekracht voor alle vijanden
-                    enemy.speedY += this.gravity;
-                    enemy.y += enemy.speedY;
-
-                    // Platform collision voor vijanden
-                    let onGround = false;
-                    this.platforms.forEach(platform => {
-                        if (this.collision(enemy, platform)) {
-                            if (enemy.speedY > 0) {
-                                enemy.y = platform.y - enemy.height;
-                                enemy.speedY = 0;
-                                onGround = true;
-                                enemy.canJump = true;
-                            }
-                        }
-                    });
-
-                    // Update jump cooldown
-                    if (enemy.jumpCooldown > 0) {
-                        enemy.jumpCooldown--;
-                    }
-
-                    // Smart enemy behavior
-                    const distanceToPlayer = Math.hypot(
-                        this.player.x - enemy.x,
-                        this.player.y - enemy.y
-                    );
-
-                    if (distanceToPlayer < enemy.detectionRange) {
-                        // Bereken richting naar speler
-                        const dirX = this.player.x - enemy.x;
-                        const dirY = this.player.y - enemy.y;
-                        const length = Math.hypot(dirX, dirY);
-                        
-                        // Normaliseer en pas snelheid toe
-                        enemy.x += (dirX / length) * enemy.chaseSpeed;
-
-                        // Slim springgedrag
-                        if (enemy.canJump && enemy.jumpCooldown <= 0) {
-                            // Spring als speler hoger is
-                            if (this.player.y < enemy.y - enemy.height) {
-                                enemy.speedY = enemy.jumpForce;
-                                enemy.canJump = false;
-                                enemy.jumpCooldown = 60; // Wacht 60 frames voor volgende sprong
-                            }
-                            // Spring als er een platform in de weg zit
-                            this.platforms.forEach(platform => {
-                                if (this.collision({
-                                    x: enemy.x + Math.sign(dirX) * 50,
-                                    y: enemy.y,
-                                    width: enemy.width,
-                                    height: enemy.height
-                                }, platform)) {
-                                    enemy.speedY = enemy.jumpForce;
-                                    enemy.canJump = false;
-                                    enemy.jumpCooldown = 60;
-                                }
-                            });
-                        }
-                    }
-                });
-
-                // Check voor collision met speler alleen als niet onkwetsbaar
-                if (!this.isInvulnerable) {
-                this.enemies.forEach(enemy => {
-                    if (this.collision(this.player, enemy)) {
-                            if (this.lives > 1) {
-                                // Hart animatie
-                            const heartSize = this.canvas.width * 0.02;
-                            const heartSpacing = heartSize * 1.5;
-                            const startX = this.canvas.width - (heartSize * 3 + heartSpacing * 2) - heartSize/2;
-                            const startY = this.canvas.height * 0.03;
-                            
-                            this.createHeartParticles(
-                                startX + (heartSize + heartSpacing) * (this.lives - 1),
-                                startY,
-                                heartSize
-                            );
-                                
-                                // Normaal leven verliezen
-                        this.lives--;
-
-                            // Activeer onkwetsbaarheid en control lock
-                            this.isInvulnerable = true;
-                            this.invulnerabilityTimer = this.invulnerabilityTime;
-                            this.controlsLocked = true;
-                            this.controlLockTimer = this.controlLockTime;
-                            
-                            // Reset posities
-                        this.player.x = this.canvas.width * 0.1;
-                        this.player.y = this.canvas.height * 0.5;
-                            this.player.speedY = 0;
-
-                            // Reset enemy
-                            enemy.x = enemy.startX;
-                            enemy.y = enemy.startY;
-                            enemy.speedX = 0;
-                            enemy.speedY = 0;
-                            } else {
-                                // Laatste hartje verloren - Game Over
-                                this.lives = 0;
-                                this.startGameOver();
-                            }
-                        }
-                    });
-                }
-
-                // Update onkwetsbaarheid timer
-                if (this.isInvulnerable) {
-                    this.invulnerabilityTimer--;
-                    if (this.invulnerabilityTimer <= 0) {
-                        this.isInvulnerable = false;
-                    }
-                }
-
-                // Update respawn particles
-                this.respawnParticles = this.respawnParticles.filter(particle => {
-                    particle.x += particle.speedX;
-                    particle.y += particle.speedY;
-                    particle.life--;
-                    return particle.life > 0;
-                });
-
-                // Update hartdeeltjes
-                this.heartParticles = this.heartParticles.filter(particle => {
-                    particle.x += particle.speedX;
-                    particle.y += particle.speedY;
-                    particle.speedY += 0.1; // Zwaartekracht op deeltjes
-                    particle.life--;
-                    particle.alpha = particle.life / this.particleLifetime;
-                    return particle.life > 0;
-                });
-            }
-
-            // Functie om een pixel art hart te tekenen
-            drawPixelHeart(x, y, size, empty = false) {
-                // Pas de kleur aan op basis van empty parameter
-                this.ctx.fillStyle = empty ? 'rgba(255, 0, 0, 0.3)' : '#ff0000';
-                const pixelSize = size / 8;
-
-                const heartPattern = [
-                    [0,1,1,0,0,1,1,0],
-                    [1,1,1,1,1,1,1,1],
-                    [1,1,1,1,1,1,1,1],
-                    [1,1,1,1,1,1,1,1],
-                    [0,1,1,1,1,1,1,0],
-                    [0,0,1,1,1,1,0,0],
-                    [0,0,0,1,1,0,0,0],
-                    [0,0,0,0,0,0,0,0]
-                ];
-
-                // Teken het hart pixel voor pixel
-                heartPattern.forEach((row, i) => {
-                    row.forEach((pixel, j) => {
-                        if (pixel === 1) {
-                            this.ctx.fillRect(
-                                x + j * pixelSize,
-                                y + i * pixelSize,
-                                pixelSize,
-                                pixelSize
-                            );
-                        }
-                    });
-                });
-            }
-
-            // Voeg deze nieuwe functie toe voor de hartanimatie
-            createHeartParticles(x, y, size) {
-                const numParticles = 12;
-                for (let i = 0; i < numParticles; i++) {
-                    const angle = (Math.PI * 2 * i) / numParticles;
-                    this.heartParticles.push({
-                        x: x + size/2,
-                        y: y + size/2,
-                        speedX: Math.cos(angle) * 3,
-                        speedY: Math.sin(angle) * 3,
-                        size: size/8,
-                        life: this.particleLifetime,
-                        alpha: 1
-                    });
-                }
-            }
-
-            // Nieuwe functie voor respawn animatie
-            createRespawnEffect(x, y) {
-                const numParticles = 20;
-                const colors = ['#fff', '#ff00ff', '#00ffff']; // Verschillende kleuren voor de deeltjes
-                
-                for (let i = 0; i < numParticles; i++) {
-                    const angle = (Math.PI * 2 * i) / numParticles;
-                    const speed = 2 + Math.random() * 3;
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    this.respawnParticles.push({
-                        x: x,
-                        y: y,
-                        speedX: Math.cos(angle) * speed,
-                        speedY: Math.sin(angle) * speed,
-                        size: this.canvas.width * 0.01,
-                        color: color,
-                        life: 45,
-                        maxLife: 45
-                    });
-                }
-            }
-
-            // Nieuwe game over functies
-            startGameOver() {
-                this.gameOver = true;
-                this.fadeOutAlpha = 0;
-                this.gameOverTextScale = 0;
-                this.controlsLocked = true; // Lock controls tijdens game over
-            }
-
-            updateGameOver() {
-                if (this.gameOver) {
-                    // Fade out effect
-                    this.fadeOutAlpha = Math.min(this.fadeOutAlpha + 0.01, 0.7);
-                    
-                    // Text scale effect
-                    this.gameOverTextScale = Math.min(this.gameOverTextScale + 0.05, 1);
-
-                    // Reset game na 4 seconden
-                    if (this.fadeOutAlpha >= 0.7) {
-                        setTimeout(() => {
-                            this.resetGame();
-                        }, 4000);
-                    }
-                }
-            }
-
-            resetGame() {
-                // Reset alle game variabelen
-                this.lives = 3;
-                this.score = 0;
-                this.gameOver = false;
-                this.fadeOutAlpha = 0;
-                this.gameOverTextScale = 0;
-                this.controlsLocked = false;
-                this.isInvulnerable = false;
-                
-                // Reset speler positie
-                this.player.x = this.canvas.width * 0.1;
-                this.player.y = this.canvas.height * 0.5;
-                this.player.speedY = 0;
-
-                // Reset enemy
-                this.enemies.forEach(enemy => {
-                    enemy.x = enemy.startX;
-                    enemy.y = enemy.startY;
-                    enemy.speedX = 0;
-                    enemy.speedY = 0;
-                });
-
-                // Reset coins
-                this.coins.forEach(coin => {
-                    coin.collected = false;
-                });
-
-                // Stop game muziek en start menu muziek
-                this.gameMusic.pause();
-                this.gameMusic.currentTime = 0;
-                this.menuMusic.play();
-            }
-
-            // Helper functie voor knoppen
-            drawButton(x, y, width, height, text, isHovered) {
-                this.ctx.fillStyle = isHovered ? '#ff00ff' : '#ffffff';
-                this.ctx.strokeStyle = isHovered ? '#ffffff' : '#ff00ff';
-                this.ctx.lineWidth = 2;
-
-                // Teken knop achtergrond
-                this.ctx.fillRect(x, y, width, height);
-                this.ctx.strokeRect(x, y, width, height);
-
-                // Teken tekst
-                this.ctx.font = `${height * 0.5}px 'Press Start 2P'`;
-                this.ctx.fillStyle = isHovered ? '#ffffff' : '#000000';
-                this.ctx.textAlign = 'center';
-                this.ctx.textBaseline = 'middle';
-                this.ctx.fillText(text, x + width/2, y + height/2);
-            }
-
-            // Mouse tracking
-            isMouseOverButton(x, y, width, height) {
-                return this.mouseX >= x && 
-                       this.mouseX <= x + width && 
-                       this.mouseY >= y && 
-                       this.mouseY <= y + height;
-            }
-
-            // Victory functies
-            startVictory() {
-                this.victory = true;
-                this.victoryFadeAlpha = 0;
-                this.victoryTextScale = 0;
-                this.controlsLocked = true;
-            }
-
-            updateVictory() {
-                if (this.victory) {
-                    this.victoryFadeAlpha = Math.min(this.victoryFadeAlpha + 0.01, 0.7);
-                    this.victoryTextScale = Math.min(this.victoryTextScale + 0.05, 1);
-                }
             }
         }
 
-        // Loading screen en game start logica
-        const menuMusic = new Audio('assets/menu.mp3');
-        menuMusic.loop = true;
-        menuMusic.play();
+        function checkEnemyVisibility() {
+            const lightAngle = (playerRotation + 90) * Math.PI / 180;
+            const lightRange = 400;
+            const lightWidth = Math.PI / 3;
 
-        document.querySelector('a[href="#"].menu-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            const loadingScreen = document.querySelector('.loading-screen');
-            const gameScreen = document.querySelector('.game-screen');
-            const loadingBar = document.querySelector('.loading-bar');
-            let progress = 0;
-
-            loadingScreen.style.display = 'flex';
-            
-            // Stop menu muziek wanneer het spel start
-            menuMusic.pause();
-            menuMusic.currentTime = 0;
-            
-            const loadingInterval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(loadingInterval);
-                    
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                        gameScreen.style.display = 'block';
-                        const game = new Game();
-                        window.currentGame = game; // Sla de instance op
-                        game.start();
-                    }, 1000);
-                }
-                loadingBar.style.width = progress + '%';
-            }, 500);
-        });
-
-        // Voeg event listeners toe voor alle menu items
-        document.querySelectorAll('.menu-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const menuText = this.textContent;
+            enemies.forEach(enemy => {
+                const dx = enemy.x - playerX;
+                const dy = enemy.y - playerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                // Verberg het hoofdmenu
-                document.querySelector('.menu-container').style.display = 'none';
+                let angle = Math.atan2(dy, dx);
+                if (angle < 0) angle += 2 * Math.PI;
                 
-                if (menuText === 'START SPEL') {
-                    // Bestaande game start logica
-                    startGame();
-                } else if (menuText === 'OPTIES') {
-                    showOptionsScreen();
-                } else if (menuText === 'CREDITS') {
-                    showCreditsScreen();
-                } else if (menuText === 'AFSLUITEN') {
-                    showExitScreen();
+                let normalizedLightAngle = lightAngle % (2 * Math.PI);
+                if (normalizedLightAngle < 0) normalizedLightAngle += 2 * Math.PI;
+                
+                let angleDiff = Math.abs(angle - normalizedLightAngle);
+                if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
+
+                // Striktere check voor zichtbaarheid
+                const inLightCone = distance < lightRange && 
+                                  angleDiff < lightWidth / 2 &&
+                                  distance > 20; // Minimale afstand tot speler
+
+                // Bereken hoeveel van de cirkel zichtbaar moet zijn
+                if (inLightCone) {
+                    const visibilityAngle = (lightWidth / 2 - angleDiff) * (180 / Math.PI);
+                    const visibilityPercent = Math.min(100, Math.max(0, visibilityAngle * 2));
+                    enemy.element.style.clipPath = `circle(${visibilityPercent}% at center)`;
+                    enemy.element.style.display = 'block';
+                } else {
+                    enemy.element.style.display = 'none';
                 }
             });
-        });
-
-        // Voeg de nieuwe schermen toe aan de HTML
-        document.body.insertAdjacentHTML('beforeend', `
-            <div class="options-screen screen" style="display: none;">
-                <h1 class="screen-title">OPTIES</h1>
-                <div class="screen-content">
-                    <button class="close-button">×</button>
-                    <div class="option-item">
-                        <span>GELUID</span>
-                        <div class="slider">
-                            <div class="slider-fill"></div>
-                        </div>
-                    </div>
-                    <div class="option-item">
-                        <span>MUZIEK</span>
-                        <div class="slider">
-                            <div class="slider-fill"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="credits-screen screen" style="display: none;">
-                <h1 class="screen-title">CREDITS</h1>
-                <div class="screen-content">
-                    <button class="close-button">×</button>
-                    <div class="credit-item">
-                        <h2>ONTWIKKELING</h2>
-                        <p>JOUW NAAM</p>
-                    </div>
-                    <div class="credit-item">
-                        <h2>GRAPHICS</h2>
-                        <p>PIXEL ART STUDIO</p>
-                    </div>
-                    <div class="credit-item">
-                        <h2>MUZIEK</h2>
-                        <p>RETRO BEATS</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="exit-screen screen" style="display: none;">
-                <h1 class="screen-title">AFSLUITEN</h1>
-                <div class="screen-content">
-                    <button class="close-button">×</button>
-                    <div class="exit-content">
-                    <p>WEET JE ZEKER DAT JE WIL AFSLUITEN?</p>
-                    <div class="exit-buttons">
-                        <button class="exit-yes">JA</button>
-                        <button class="exit-no">NEE</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `);
-
-        // Voeg de bijbehorende CSS toe
-        const style = document.createElement('style');
-        style.textContent = `
-            .screen {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: #000;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                font-family: 'Press Start 2P', cursive;
-                color: #fff;
-            }
-
-            .screen-title {
-                font-size: 2rem;
-                margin-bottom: 3rem;
-                text-shadow: 2px 2px #ff00ff;
-                animation: staticGlitch 2s infinite;
-            }
-
-            .screen-content {
-                background-color: #111;
-                padding: 2rem;
-                border: 4px solid #fff;
-                box-shadow: 0 0 0 4px #111, 0 0 0 8px #fff;
-                width: 80%;
-                max-width: 600px;
-            }
-
-            .option-item {
-                margin: 2rem 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .slider {
-                width: 200px;
-                height: 20px;
-                background: #333;
-                border: 2px solid #fff;
-                position: relative;
-            }
-
-            .slider-fill {
-                width: 50%;
-                height: 100%;
-                background: #ff00ff;
-            }
-
-            .pixel-select {
-                background: #000;
-                border: 2px solid #fff;
-                color: #fff;
-                padding: 0.5rem;
-                font-family: 'Press Start 2P', cursive;
-                cursor: pointer;
-            }
-
-            .credit-item {
-                margin: 2rem 0;
-                text-align: center;
-            }
-
-            .credit-item h2 {
-                color: #ff00ff;
-                margin-bottom: 1rem;
-            }
-
-            .exit-content {
-                text-align: center;
-            }
-
-            .exit-buttons {
-                margin-top: 2rem;
-                display: flex;
-                justify-content: center;
-                gap: 2rem;
-            }
-
-            .back-button, .exit-yes, .exit-no {
-                background: #fff;
-                border: 2px solid #ff00ff;
-                padding: 1rem 2rem;
-                font-family: 'Press Start 2P', cursive;
-                cursor: pointer;
-                margin-top: 2rem;
-                transition: all 0.3s ease;
-            }
-
-            .back-button:hover, .exit-yes:hover, .exit-no:hover {
-                background: #ff00ff;
-                color: #fff;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Functies voor het tonen van de verschillende schermen
-        function showOptionsScreen() {
-            document.querySelector('.options-screen').style.display = 'flex';
         }
 
-        function showCreditsScreen() {
-            document.querySelector('.credits-screen').style.display = 'flex';
+        function startGame() {
+            document.querySelector('.menu-container').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            playerContainer = document.getElementById('player-container');
+            
+            playerContainer.style.left = playerX + 'px';
+            playerContainer.style.top = playerY + 'px';
+            
+            window.addEventListener('keydown', e => keys[e.key] = true);
+            window.addEventListener('keyup', e => keys[e.key] = false);
+            
+            createEnemies();
+            gameLoop();
         }
 
-        function showExitScreen() {
-            document.querySelector('.exit-screen').style.display = 'flex';
+        function updateLightMask() {
+            const lightMask = document.getElementById('light-mask');
+            const darknessOverlay = document.getElementById('darkness-overlay');
+            
+            // Bereken positie voor het masker
+            const maskX = playerX - 84; // Zelfde offset als light-cone
+            const maskY = playerY;
+            
+            // Update masker positie en rotatie
+            lightMask.style.transform = `translate(${maskX}px, ${maskY}px) rotate(${playerRotation}deg)`;
         }
 
-        // Event listeners voor de terug knoppen
-        document.querySelectorAll('.close-button').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.screen').forEach(screen => {
-                    screen.style.display = 'none';
-                });
-                document.querySelector('.menu-container').style.display = 'block';
-            });
-        });
+        function gameLoop() {
+            // Rotatie met A/D of pijltjes links/rechts
+            if (keys['a'] || keys['ArrowLeft']) {
+                playerRotation -= ROTATION_SPEED;
+            }
+            if (keys['d'] || keys['ArrowRight']) {
+                playerRotation += ROTATION_SPEED;
+            }
 
-        // Exit screen knoppen
-        document.querySelector('.exit-yes').addEventListener('click', () => {
-            // Direct proberen te sluiten
-            window.close();
-            // Als dat niet werkt, probeer alternatieve methode
-            window.location.href = 'about:blank';
-            window.top.close();
-        });
+            // Vooruit/achteruit beweging in de kijkrichting
+            if (keys['w'] || keys['ArrowUp']) {
+                playerX += Math.cos((playerRotation + 90) * Math.PI / 180) * SPEED;
+                playerY += Math.sin((playerRotation + 90) * Math.PI / 180) * SPEED;
+            }
+            if (keys['s'] || keys['ArrowDown']) {
+                playerX -= Math.cos((playerRotation + 90) * Math.PI / 180) * SPEED;
+                playerY -= Math.sin((playerRotation + 90) * Math.PI / 180) * SPEED;
+            }
 
-        document.querySelector('.exit-no').addEventListener('click', () => {
-            document.querySelector('.exit-screen').style.display = 'none';
-            document.querySelector('.menu-container').style.display = 'block';
-        });
+            // Zorg dat speler binnen het scherm blijft
+            playerX = Math.max(0, Math.min(window.innerWidth - 32, playerX));
+            playerY = Math.max(0, Math.min(window.innerHeight - 32, playerY));
+
+            // Update container positie en rotatie
+            playerContainer.style.left = playerX + 'px';
+            playerContainer.style.top = playerY + 'px';
+            playerContainer.style.transform = `rotate(${playerRotation}deg)`;
+
+            // Update lichtmasker
+            updateLightMask();
+
+            // Check vijand zichtbaarheid
+            checkEnemyVisibility();
+
+            requestAnimationFrame(gameLoop);
+        }
     </script>
 </body>
 </html> 
