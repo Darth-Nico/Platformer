@@ -17,37 +17,40 @@
         }
 
         #game-container {
-            display: grid;
-            grid-template-columns: auto 1fr;
+            position: relative;
+            width: 100vw;
             height: 100vh;
-            transition: grid-template-columns 0.3s ease;
+            overflow: hidden;
         }
 
-        #game-container.inventory-collapsed {
-            grid-template-columns: 30px 1fr;
+        #game-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
         }
 
         #inventory {
             background: rgba(20, 12, 12, 0.95);
             border-right: 2px solid #d4af37;
             padding: 1rem;
-            position: relative;
             width: 200px;
-            transition: all 0.3s ease;
-            overflow: hidden;
+            height: 100%;
+            pointer-events: auto;
         }
 
         .inventory-collapsed #inventory {
-            width: 0;
-            padding: 0;
-            border: none;
+            transform: none;
         }
 
         .inventory-toggle {
-            position: relative;
-            min-width: 30px;
+            position: absolute;
+            right: -30px;
+            top: 10px;
             width: 30px;
-            height: 60px;
+            height: 30px;
             background: rgba(20, 12, 12, 0.95);
             border: 2px solid #d4af37;
             border-radius: 0 5px 5px 0;
@@ -55,24 +58,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            align-self: center;
-            margin-left: -2px;
-            z-index: 10;
+            pointer-events: auto;
             transition: all 0.3s ease;
+        }
+
+        .inventory-toggle::before {
+            content: '×';
+            color: #d4af37;
+            font-size: 20px;
+            line-height: 1;
         }
 
         .inventory-toggle:hover {
             background: rgba(212, 175, 55, 0.1);
         }
 
-        .inventory-toggle span {
-            transform: rotate(0deg);
-            transition: transform 0.3s ease;
-            display: inline-block;
+        .inventory-toggle:hover::before {
+            transform: scale(1.2);
         }
 
-        .inventory-collapsed .inventory-toggle span {
-            transform: rotate(180deg);
+        .inventory-collapsed .inventory-toggle {
+            opacity: 0;
+            visibility: hidden;
         }
 
         .inventory-collapsed .inventory-content {
@@ -84,11 +91,6 @@
             transition: opacity 0.3s ease;
         }
 
-        #game-area {
-            position: relative;
-            overflow: hidden;
-        }
-
         #player {
             position: absolute;
             width: 32px;
@@ -96,6 +98,29 @@
             background: #d4af37;
             transform: translate(-50%, -50%);
             z-index: 1;
+            animation: playerIdle 1s infinite ease-in-out;
+            transition: transform 0.2s ease;
+            box-shadow: 0 0 20px rgba(255, 220, 150, 0.2);
+            border: 2px solid rgba(255, 220, 150, 0.3);
+        }
+
+        /* Idle animatie */
+        @keyframes playerIdle {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(0.95); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Movement animatie */
+        @keyframes playerMove {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Class voor beweging */
+        #player.moving {
+            animation: playerMove 0.3s ease-in-out;
         }
 
         .panel-title {
@@ -201,35 +226,82 @@
         }
 
         .inventory-wrapper {
-            position: relative;
-            display: flex;
-        }
-
-        #inventory {
-            background: rgba(20, 12, 12, 0.95);
-            border-right: 2px solid #d4af37;
-            padding: 1rem;
-            width: 200px;
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            z-index: 1000;
+            width: 80%;
+            max-width: 800px;
+            background: rgba(20, 12, 12, 0.98);
+            border: 3px solid #d4af37;
+            border-radius: 5px;
+            padding: 2rem;
+            animation: modalFadeIn 0.3s ease;
+            opacity: 0;
             transition: all 0.3s ease;
-            overflow: hidden;
         }
 
-        .inventory-toggle {
-            position: relative;
-            min-width: 30px;
+        .inventory-wrapper.active {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Modal overlay */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        .modal-backdrop.active {
+            display: block;
+        }
+
+        /* Close button */
+        .inventory-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
             width: 30px;
-            height: 60px;
-            background: rgba(20, 12, 12, 0.95);
+            height: 30px;
+            background: transparent;
             border: 2px solid #d4af37;
-            border-radius: 0 5px 5px 0;
+            border-radius: 5px;
+            color: #d4af37;
+            font-size: 20px;
+            line-height: 1;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            align-self: center;
-            margin-left: -2px;
-            z-index: 10;
             transition: all 0.3s ease;
+        }
+
+        .inventory-close:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Inventory title */
+        .inventory-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translate(-50%, -48%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
         }
 
         /* Tutorial overlay met cutout mogelijkheid */
@@ -276,7 +348,7 @@
         }
 
         .tutorial-overlay.show-herbs::before {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.85); /* Donkerdere overlay */
         }
 
         .tutorial-box {
@@ -285,8 +357,8 @@
             padding: 2rem;
             max-width: 500px;
             text-align: center;
-            position: relative;
-            animation: fadeIn 0.3s ease;
+            position: absolute;
+            transition: all 0.3s ease;
             z-index: 10000;
         }
 
@@ -341,53 +413,80 @@
         /* Specifieke highlight voor herbs tijdens tutorial */
         .inventory-section.highlight-herbs {
             position: relative;
-            z-index: 10000;
+            z-index: 10002;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #d4af37;
+            border-radius: 5px;
+            animation: herbsPulse 2s infinite;
         }
 
-        .inventory-section.highlight-herbs .section-header,
+        @keyframes herbsPulse {
+            0% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.4); }
+            100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        }
+
         .inventory-section.highlight-herbs .section-content {
-            background: rgba(212, 175, 55, 0.1);
-            border-color: #d4af37;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            max-height: 500px !important; /* Forceer open tijdens tutorial */
         }
 
         .inventory-section.highlight-herbs .item-card {
-            animation: cardPulse 2s infinite;
+            border-color: #d4af37;
+            animation: cardGlow 2s infinite alternate;
         }
 
-        @keyframes cardPulse {
-            0% { transform: translateX(0); background: rgba(20, 12, 12, 0.95); }
-            50% { transform: translateX(5px); background: rgba(212, 175, 55, 0.2); }
-            100% { transform: translateX(0); background: rgba(20, 12, 12, 0.95); }
+        @keyframes cardGlow {
+            from { background: rgba(20, 12, 12, 0.95); }
+            to { background: rgba(212, 175, 55, 0.15); }
         }
 
         /* Verwijder message-log styles en voeg tooltip styles toe */
         .tooltip {
-            position: absolute;
-            background: rgba(20, 12, 12, 0.95);
+            width: 300px;
+            background: rgba(20, 12, 12, 0.98);
             border: 2px solid #d4af37;
-            padding: 1rem;
-            max-width: 300px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-            text-align: left;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
         }
 
         .tooltip-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #d4af37;
-            margin-bottom: 0.5rem;
-            border-bottom: 1px solid #d4af37;
-            padding-bottom: 0.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 0.5rem;
         }
 
         .tooltip-description {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .tooltip-effects {
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            padding-top: 0.8rem;
             font-size: 0.9rem;
+        }
+
+        .tooltip-effect {
             color: #a88c2c;
-            line-height: 1.4;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tooltip-effect::before {
+            content: '•';
+            color: #d4af37;
+        }
+
+        .tooltip-usage {
+            font-style: italic;
+            color: #8b7355;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            padding-top: 0.8rem;
         }
 
         .item-card {
@@ -404,78 +503,258 @@
             position: fixed;
             top: 1rem;
             right: 1rem;
+            z-index: 100;
+        }
+
+        /* Update collapsed state */
+        .inventory-collapsed .inventory-wrapper {
+            transform: translateX(-220px);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Speciale positie voor herbs tutorial */
+        .tutorial-overlay.show-herbs .tutorial-box {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            transform: none;
+            max-width: 300px; /* Smaller voor betere layout */
+        }
+
+        /* Tutorial specific inventory styles */
+        .tutorial-mode .inventory-wrapper {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+        }
+
+        /* Verwijder oude highlight styles */
+        .tutorial-overlay.show-herbs::before {
+            background: rgba(0, 0, 0, 0.7); /* Gewone overlay zonder cutout */
+        }
+
+        /* Update highlight styles voor modal inventory */
+        .tutorial-mode .inventory-wrapper {
+            z-index: 10000; /* Boven tutorial overlay */
+        }
+
+        .inventory-section.highlight-herbs {
+            animation: glowPulse 2s infinite;
+            border: 2px solid #d4af37;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+        }
+
+        /* Tutorial box positie voor herbs tutorial */
+        .tutorial-overlay.show-herbs .tutorial-box {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            transform: none;
+            max-width: 300px;
+        }
+
+        /* Highlight styles voor inventory tijdens tutorial */
+        .inventory-wrapper.tutorial-highlight {
+            z-index: 10001;
+            box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.85);
+        }
+
+        .item-card.empty {
+            opacity: 0.6;
+            cursor: default;
+            border-style: dashed;
+        }
+        
+        .item-card.empty:hover {
+            transform: none;
+            background: rgba(20, 12, 12, 0.95);
+        }
+        
+        .item-card.empty .item-name {
+            color: #8b7355;
+        }
+        
+        .item-card.empty .item-description {
+            font-style: italic;
+        }
+
+        /* Verwijder alle border styles */
+        .game-border {
+            display: none;
+        }
+
+        /* Update game area om volledige viewport te gebruiken */
+        #game-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        /* Update status indicator naar objective indicator */
+        .objective-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
             background: rgba(20, 12, 12, 0.95);
             border: 2px solid #d4af37;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+            padding: 0.8rem 1.2rem;
             color: #d4af37;
+            font-size: 1rem;
+            border-radius: 5px;
             z-index: 100;
+        }
+
+        .objective-text {
+            color: #a88c2c;
+            font-style: italic;
+        }
+
+        .objective-text.empty {
+            opacity: 0.7;
+        }
+
+        /* Lichtstraal element */
+        .light-beam {
+            position: absolute;
+            width: 160px;  /* Langere straal */
+            height: 32px;  /* Zelfde hoogte als karakter */
+            background: rgba(255, 220, 150, 0.2);
+            transform-origin: center left;
+            left: 16px;    /* Helft van karakter breedte */
+            top: 0px;
+            pointer-events: none;
+            z-index: 0;
+            /* Gradient voor fade effect */
+            background: linear-gradient(
+                to right,
+                rgba(255, 220, 150, 0.3),
+                rgba(255, 220, 150, 0.1) 70%,
+                transparent 100%
+            );
+        }
+
+        /* Rotatie classes voor speler en lichtstraal */
+        .facing-right {
+            transform: translate(-50%, -50%) rotate(0deg) !important;
+        }
+
+        .facing-left {
+            transform: translate(-50%, -50%) rotate(180deg) !important;
+        }
+
+        .facing-up {
+            transform: translate(-50%, -50%) rotate(-90deg) !important;
+        }
+
+        .facing-down {
+            transform: translate(-50%, -50%) rotate(90deg) !important;
+        }
+
+        /* Voeg glow effect toe aan karakter */
+        #player {
+            box-shadow: 0 0 20px rgba(255, 220, 150, 0.15);
+        }
+
+        /* Update player styles voor rotatie animatie */
+        #player {
+            transition: transform 0.2s ease;
+        }
+
+        /* Style voor het karakter zelf */
+        .player-sprite {
+            width: 100%;
+            height: 100%;
+            background: #d4af37;
+            border: 2px solid rgba(255, 220, 150, 0.3);
+            box-shadow: 0 0 20px rgba(255, 220, 150, 0.15);
+            /* Voeg een driehoek toe om de richting aan te geven */
+            clip-path: polygon(0% 25%, 100% 50%, 0% 75%);
+        }
+
+        /* Voeg een container toe voor het karakter */
+        .player-container {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            transform-origin: center center;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div class="inventory-wrapper">
-            <div id="inventory">
-                <div class="inventory-content">
-                    <h3 class="panel-title">Inventory</h3>
-                    
-                    <div class="inventory-section">
-                        <div class="section-header">
-                            <span>Herbs</span>
-                            <span class="toggle-icon">›</span>
-                        </div>
-                        <div class="section-content">
-                            <div class="item-card">
-                                <div class="item-name">Sage</div>
-                                <div class="item-description">A sacred herb known for its purifying properties.</div>
-                                <div class="item-quantity">x3</div>
-                            </div>
-                            <div class="item-card">
-                                <div class="item-name">Thyme</div>
-                                <div class="item-description">Strengthens the mind against dark influences.</div>
-                                <div class="item-quantity">x2</div>
-                            </div>
-                            <div class="item-card">
-                                <div class="item-name">Lavender</div>
-                                <div class="item-description">Calms the spirit and reveals hidden truths.</div>
-                                <div class="item-quantity">x1</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="inventory-section">
-                        <div class="section-header">
-                            <span>Tools</span>
-                            <span class="toggle-icon">›</span>
-                        </div>
-                        <div class="section-content">
-                            <div class="item-card">
-                                <div class="item-name">Mirror Shard</div>
-                                <div class="item-description">Reflects and redirects light sources.</div>
-                                <div class="item-quantity">x1</div>
-                            </div>
-                            <div class="item-card">
-                                <div class="item-name">Lantern</div>
-                                <div class="item-description">A reliable source of light in dark places.</div>
-                                <div class="item-quantity">x1</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="inventory-toggle">
-                <span>‹</span>
-            </div>
-        </div>
-
         <div id="game-area">
-            <div class="status-indicator">Status: Normal</div>
-            <div id="player"></div>
+            <div class="objective-indicator">
+                <span>Objective: </span>
+                <span class="objective-text empty">None</span>
+            </div>
+            <div id="player">
+                <div class="player-sprite"></div>
+                <div class="light-beam"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Voeg de tutorial overlay toe aan de body -->
+    <div class="modal-backdrop"></div>
+    <div class="inventory-wrapper">
+        <button class="inventory-close">×</button>
+        <h2 class="inventory-title">Inventory</h2>
+        <div class="inventory-content">
+            <div class="inventory-section">
+                <div class="section-header">
+                    <span>Herbs</span>
+                    <span class="toggle-icon">›</span>
+                </div>
+                <div class="section-content">
+                    <div class="item-card">
+                        <div class="item-name">Sage</div>
+                        <div class="item-description">A sacred herb known for its purifying properties.</div>
+                        <div class="item-quantity">x3</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Thyme</div>
+                        <div class="item-description">Strengthens the mind against dark influences.</div>
+                        <div class="item-quantity">x2</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Lavender</div>
+                        <div class="item-description">Calms the spirit and reveals hidden truths.</div>
+                        <div class="item-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inventory-section">
+                <div class="section-header">
+                    <span>Tools</span>
+                    <span class="toggle-icon">›</span>
+                </div>
+                <div class="section-content">
+                    <div class="item-card">
+                        <div class="item-name">Mirror Shard</div>
+                        <div class="item-description">Reflects and redirects light sources.</div>
+                        <div class="item-quantity">x1</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Lantern</div>
+                        <div class="item-description">A reliable source of light in dark places.</div>
+                        <div class="item-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="tutorial-overlay">
         <div class="tutorial-box">
             <div class="tutorial-title"></div>
@@ -522,51 +801,133 @@
             }, MOVE_COOLDOWN);
         }
 
-        // Keyboard handler voor beweging
+        // Voeg boundary check functie toe
+        function checkBoundaries(newX, newY) {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            // Converteer grid positie naar pixels
+            const pixelX = newX * GRID_SIZE;
+            const pixelY = newY * GRID_SIZE;
+            
+            // Check of nieuwe positie binnen viewport valt
+            return (
+                pixelX >= 0 && 
+                pixelX <= viewportWidth - GRID_SIZE && 
+                pixelY >= 0 && 
+                pixelY <= viewportHeight - GRID_SIZE
+            );
+        }
+
+        // Voeg lichtstraal toe aan speler
+        const lightBeam = document.createElement('div');
+        lightBeam.className = 'light-beam';
+        player.appendChild(lightBeam);
+
+        // Houd bij welke richting de speler op kijkt
+        let playerFacing = 'right';
+
+        // Update movement handler met verbeterde rotatie
         document.addEventListener('keydown', (e) => {
             if (!canMove || gamePaused) return;
 
+            let newX = gridX;
+            let newY = gridY;
             let moved = false;
+            let rotated = false;
 
             switch(e.key) {
                 case 'w':
                 case 'ArrowUp':
-                    gridY--;
+                    // Move forward in current facing direction
+                    switch(playerFacing) {
+                        case 'up': newY--; break;
+                        case 'down': newY++; break;
+                        case 'left': newX--; break;
+                        case 'right': newX++; break;
+                    }
                     moved = true;
                     break;
                 case 's':
                 case 'ArrowDown':
-                    gridY++;
+                    // Move backward in current facing direction
+                    switch(playerFacing) {
+                        case 'up': newY++; break;
+                        case 'down': newY--; break;
+                        case 'left': newX++; break;
+                        case 'right': newX--; break;
+                    }
                     moved = true;
                     break;
-                case 'a':
                 case 'ArrowLeft':
-                    gridX--;
-                    moved = true;
+                case 'a':
+                    // Rotate left
+                    rotated = true;
+                    switch(playerFacing) {
+                        case 'up': playerFacing = 'left'; break;
+                        case 'left': playerFacing = 'down'; break;
+                        case 'down': playerFacing = 'right'; break;
+                        case 'right': playerFacing = 'up'; break;
+                    }
                     break;
-                case 'd':
                 case 'ArrowRight':
-                    gridX++;
-                    moved = true;
+                case 'd':
+                    // Rotate right
+                    rotated = true;
+                    switch(playerFacing) {
+                        case 'up': playerFacing = 'right'; break;
+                        case 'right': playerFacing = 'down'; break;
+                        case 'down': playerFacing = 'left'; break;
+                        case 'left': playerFacing = 'up'; break;
+                    }
                     break;
             }
 
-            if (moved) {
-                // Speel bewegingsgeluid
-                const audio = new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA==');
-                audio.volume = 0.2;
+            // Handle rotation
+            if (rotated) {
+                rotatePlayer(playerFacing);
+                
+                // Play rotation sound
+                const audio = new Audio('data:audio/wav;base64,...');
+                audio.volume = 0.1;
                 audio.play();
-
-                updatePlayerPosition();
+                
                 setMoveCooldown();
             }
+
+            // Handle movement
+            if (moved && checkBoundaries(newX, newY)) {
+                gridX = newX;
+                gridY = newY;
+                updatePlayerPosition();
+                setMoveCooldown();
+
+                // Add movement animation
+                player.classList.remove('moving');
+                void player.offsetWidth; // Trigger reflow
+                player.classList.add('moving');
+
+                // Remove moving class after animation
+                player.addEventListener('animationend', () => {
+                    player.classList.remove('moving');
+                }, { once: true });
+
+                // Play movement sound
+                const audio = new Audio('data:audio/wav;base64,...');
+                audio.volume = 0.2;
+                audio.play();
+            }
         });
+
+        // Start met speler naar rechts gericht
+        player.classList.add('facing-right');
 
         // Voeg game pause functionaliteit toe
         let gamePaused = false;
 
         // Start tutorial bij het laden van het spel
         window.addEventListener('load', () => {
+            updateObjective('');
             showTutorial(0);
         });
 
@@ -645,22 +1006,61 @@
             });
         });
 
-        // Voeg inventory toggle functionaliteit toe
-        const inventoryToggle = document.querySelector('.inventory-toggle');
-        const gameContainer = document.getElementById('game-container');
-        
-        inventoryToggle.addEventListener('click', () => {
-            gameContainer.classList.toggle('inventory-collapsed');
+        // Update inventory toggle functionaliteit
+        function toggleInventory() {
+            const inventoryWrapper = document.querySelector('.inventory-wrapper');
+            const modalBackdrop = document.querySelector('.modal-backdrop');
+            const tutorialBox = document.querySelector('.tutorial-box');
             
-            // Speel een geluid af bij het in/uitklappen
+            if (inventoryWrapper.classList.contains('active')) {
+                modalBackdrop.classList.remove('active');
+                setTimeout(() => {
+                    inventoryWrapper.classList.remove('active');
+                    
+                    // Als we in de herbs tutorial zijn, verplaats tutorial box terug naar het midden
+                    if (document.querySelector('.tutorial-overlay.show-herbs')) {
+                        tutorialBox.style.position = 'absolute';
+                        tutorialBox.style.top = '50%';
+                        tutorialBox.style.right = '50%';
+                        tutorialBox.style.transform = 'translate(50%, -50%)';
+                    }
+                }, 300);
+            } else {
+                inventoryWrapper.classList.add('active');
+                modalBackdrop.classList.add('active');
+                
+                // Als we in de herbs tutorial zijn
+                if (document.querySelector('.tutorial-overlay.show-herbs')) {
+                    // Verplaats tutorial box naar rechtsboven
+                    tutorialBox.style.position = 'fixed';
+                    tutorialBox.style.top = '2rem';
+                    tutorialBox.style.right = '2rem';
+                    tutorialBox.style.transform = 'none';
+                    
+                    const herbsSection = document.querySelector('.inventory-section');
+                    herbsSection.classList.add('highlight-herbs');
+                    herbsSection.querySelector('.section-content').classList.add('expanded');
+                }
+            }
+            
+            // Speel geluid
             const audio = new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA==');
+            audio.volume = 0.1;
             audio.play();
-        });
+        }
 
-        // Voeg sneltoets toe voor inventory toggle (I-toets)
+        // Event listeners
+        document.querySelector('.inventory-close').addEventListener('click', toggleInventory);
+        document.querySelector('.modal-backdrop').addEventListener('click', toggleInventory);
+
+        // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === 'i') {
-                gameContainer.classList.toggle('inventory-collapsed');
+                e.preventDefault(); // Voorkom dat de 'i' in een tekstveld terecht komt
+                toggleInventory();
+            }
+            if (e.key === 'Escape' && document.querySelector('.inventory-wrapper.active')) {
+                toggleInventory();
             }
         });
 
@@ -706,6 +1106,7 @@
             document.querySelectorAll('.highlight-herbs').forEach(el => {
                 el.classList.remove('highlight-herbs');
             });
+            document.querySelector('.inventory-wrapper').classList.remove('tutorial-highlight');
             overlay.className = 'tutorial-overlay';
 
             // Update tutorial content
@@ -718,33 +1119,219 @@
             // Speciale behandeling voor herbs tutorial
             if (tutorial.showHerbs) {
                 overlay.classList.add('show-herbs');
-                // Open de herbs sectie en highlight
+                
+                // Open inventory en highlight
+                const inventoryWrapper = document.querySelector('.inventory-wrapper');
+                inventoryWrapper.classList.add('active', 'tutorial-highlight');
+                document.querySelector('.modal-backdrop').classList.add('active');
+
+                // Highlight herbs sectie
                 const herbsSection = document.querySelector('.inventory-section');
-                const herbsContent = herbsSection.querySelector('.section-content');
                 herbsSection.classList.add('highlight-herbs');
+
+                // Automatisch open de herbs sectie
+                const herbsContent = herbsSection.querySelector('.section-content');
                 herbsContent.classList.add('expanded');
+
+                // Verplaats tutorial box naar rechtsboven
+                const tutorialBox = overlay.querySelector('.tutorial-box');
+                tutorialBox.style.position = 'fixed';
+                tutorialBox.style.top = '2rem';
+                tutorialBox.style.right = '2rem';
+                tutorialBox.style.transform = 'none';
             }
 
-            // Pauzeer het spel tijdens tutorial
             gamePaused = true;
         }
 
-        // Tutorial navigatie
+        // Voeg een functie toe om de inventory te resetten
+        function resetInventory() {
+            // Verwijder alle items uit de inventory
+            document.querySelectorAll('.item-card').forEach(card => {
+                card.remove();
+            });
+
+            // Voeg een "Empty" bericht toe aan elke sectie
+            document.querySelectorAll('.section-content').forEach(section => {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.className = 'item-card empty';
+                emptyMessage.innerHTML = `
+                    <div class="item-name">Empty</div>
+                    <div class="item-description">Find items throughout the town to fill your inventory.</div>
+                `;
+                section.appendChild(emptyMessage);
+            });
+        }
+
+        // Update de tutorial navigatie
         document.querySelector('.tutorial-next').addEventListener('click', () => {
             currentTutorial++;
             if (currentTutorial < tutorials.length) {
                 showTutorial(currentTutorial);
+                updateObjective(''); // Reset objective tijdens tutorial
             } else {
                 // Einde tutorial
-                document.querySelector('.tutorial-overlay').style.display = 'none';
+                const overlay = document.querySelector('.tutorial-overlay');
+                const inventoryWrapper = document.querySelector('.inventory-wrapper');
+                const modalBackdrop = document.querySelector('.modal-backdrop');
+                
+                overlay.style.display = 'none';
+                inventoryWrapper.classList.remove('active');
+                modalBackdrop.classList.remove('active');
+                
+                // Reset z-index
+                overlay.style.zIndex = '';
+                
+                // Reset de inventory
+                resetInventory();
+                
+                // Update objective na tutorial
+                updateObjective("Find items to fill your inventory");
+                
                 gamePaused = false;
             }
         });
 
-        // Functie om status te updaten
-        function updateStatus(status) {
-            const statusIndicator = document.querySelector('.status-indicator');
-            statusIndicator.textContent = `Status: ${status}`;
+        // Functie om objective te updaten
+        function updateObjective(objective) {
+            const objectiveText = document.querySelector('.objective-text');
+            if (!objective || objective.trim() === '') {
+                objectiveText.textContent = 'None';
+                objectiveText.classList.add('empty');
+            } else {
+                objectiveText.textContent = objective;
+                objectiveText.classList.remove('empty');
+            }
+        }
+
+        // Update tooltip content met meer details
+        const itemDetails = {
+            'Sage': {
+                description: 'A sacred herb known for its purifying properties. Essential for cleansing rituals and protection against dark influences.',
+                effects: [
+                    'Purifies corrupted areas',
+                    'Provides temporary protection against parasitic influence',
+                    'Can be combined with other herbs for stronger effects'
+                ],
+                usage: 'Burn or crush to release its protective properties. Most effective when used at ritual sites.'
+            },
+            'Thyme': {
+                description: 'Strengthens the mind against dark influences. Can be combined with other herbs for enhanced mental clarity.',
+                effects: [
+                    'Increases resistance to mental manipulation',
+                    'Enhances ability to see through illusions',
+                    'Helps maintain sanity in heavily corrupted areas'
+                ],
+                usage: 'Can be consumed as tea or carried as a protective charm. Combine with Lavender for enhanced mental protection.'
+            },
+            'Lavender': {
+                description: 'Calms the spirit and reveals hidden truths. Useful for detecting environmental anomalies.',
+                effects: [
+                    'Reveals nearby environmental anomalies',
+                    'Reduces stress and mental fatigue',
+                    'Enhances perception of subtle changes'
+                ],
+                usage: 'Crush to release its revealing properties. Most effective during investigation of suspicious areas.'
+            },
+            'Mirror Shard': {
+                description: 'A reflective surface that can be used to manipulate light and reveal hidden pathways.',
+                effects: [
+                    'Redirects light sources',
+                    'Can reveal hidden symbols and markings',
+                    'Used in specific light-based puzzles'
+                ],
+                usage: 'Hold up to light sources to redirect beams. Position carefully to solve environmental puzzles.'
+            },
+            'Lantern': {
+                description: 'A reliable source of light in dark places. Essential for exploration and puzzle-solving.',
+                effects: [
+                    'Provides consistent light source',
+                    'Can be used to trigger light-sensitive mechanisms',
+                    'Helps identify environmental details'
+                ],
+                usage: 'Light can be adjusted in intensity. Use in combination with Mirror Shards for complex light puzzles.'
+            }
+        };
+
+        // Update tooltip display functie
+        document.querySelectorAll('.item-card').forEach(card => {
+            card.addEventListener('mouseover', (e) => {
+                const itemName = card.querySelector('.item-name').textContent;
+                const details = itemDetails[itemName];
+                
+                if (details) {
+                    tooltip.innerHTML = `
+                        <div class="tooltip-title">${itemName}</div>
+                        <div class="tooltip-description">${details.description}</div>
+                        <div class="tooltip-effects">
+                            ${details.effects.map(effect => `
+                                <div class="tooltip-effect">${effect}</div>
+                            `).join('')}
+                        </div>
+                        <div class="tooltip-usage">${details.usage}</div>
+                    `;
+                }
+                
+                const rect = card.getBoundingClientRect();
+                tooltip.style.left = `${rect.right + 10}px`;
+                tooltip.style.top = `${rect.top}px`;
+                tooltip.style.opacity = '1';
+
+                // Speel geluid
+                const audio = new Audio('data:audio/wav;base64,...');
+                audio.volume = 0.1;
+                audio.play();
+            });
+        });
+
+        // Voeg style voor empty message
+        const style = document.createElement('style');
+        style.textContent = `
+            .item-card.empty {
+                opacity: 0.6;
+                cursor: default;
+                border-style: dashed;
+            }
+            
+            .item-card.empty:hover {
+                transform: none;
+                background: rgba(20, 12, 12, 0.95);
+            }
+            
+            .item-card.empty .item-name {
+                color: #8b7355;
+            }
+            
+            .item-card.empty .item-description {
+                font-style: italic;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Update rotatie logica
+        function rotatePlayer(direction) {
+            player.className = '';
+            player.classList.add(`facing-${direction}`);
+            
+            // Voeg een kleine animatie toe tijdens het draaien
+            player.style.transition = 'transform 0.2s ease';
+            
+            // Reset de transition na de animatie
+            setTimeout(() => {
+                player.style.transition = '';
+            }, 200);
+        }
+
+        // Update in de keydown handler
+        if (rotated) {
+            rotatePlayer(playerFacing);
+            
+            // Play rotation sound
+            const audio = new Audio('data:audio/wav;base64,...');
+            audio.volume = 0.1;
+            audio.play();
+            
+            setMoveCooldown();
         }
     </script>
 </body>
