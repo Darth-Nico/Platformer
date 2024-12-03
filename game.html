@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Unhallowed Parish - Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a0f0f;
+            font-family: 'MedievalSharp', cursive;
+            color: #d4af37;
+            overflow: hidden;
+        }
+
+        #game-container {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            height: 100vh;
+            transition: grid-template-columns 0.3s ease;
+        }
+
+        #game-container.inventory-collapsed {
+            grid-template-columns: 30px 1fr;
+        }
+
+        #inventory {
+            background: rgba(20, 12, 12, 0.95);
+            border-right: 2px solid #d4af37;
+            padding: 1rem;
+            position: relative;
+            width: 200px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .inventory-collapsed #inventory {
+            width: 0;
+            padding: 0;
+            border: none;
+        }
+
+        .inventory-toggle {
+            position: relative;
+            min-width: 30px;
+            width: 30px;
+            height: 60px;
+            background: rgba(20, 12, 12, 0.95);
+            border: 2px solid #d4af37;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            margin-left: -2px;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .inventory-toggle:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .inventory-toggle span {
+            transform: rotate(0deg);
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .inventory-collapsed .inventory-toggle span {
+            transform: rotate(180deg);
+        }
+
+        .inventory-collapsed .inventory-content {
+            display: none;
+        }
+
+        .inventory-content {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        #game-area {
+            position: relative;
+            overflow: hidden;
+        }
+
+        #player {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background: #d4af37;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .panel-title {
+            text-align: center;
+            border-bottom: 1px solid #d4af37;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #herbs-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #herbs-list li {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #d4af37;
+            cursor: pointer;
+        }
+
+        #herbs-list li:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        #status-effects {
+            list-style: none;
+            padding: 0;
+        }
+
+        #status-effects li {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #d4af37;
+        }
+
+        /* Nieuwe inventory styles */
+        .inventory-section {
+            margin-bottom: 1rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #d4af37;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .section-header:hover {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .section-content.expanded {
+            max-height: 500px;
+        }
+
+        .item-card {
+            background: rgba(20, 12, 12, 0.95);
+            border: 1px solid #d4af37;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .item-card:hover {
+            transform: translateX(5px);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-description {
+            font-size: 0.8rem;
+            color: #a88c2c;
+        }
+
+        .item-quantity {
+            font-size: 0.9rem;
+            color: #d4af37;
+            text-align: right;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .expanded .toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .inventory-wrapper {
+            position: relative;
+            display: flex;
+        }
+
+        #inventory {
+            background: rgba(20, 12, 12, 0.95);
+            border-right: 2px solid #d4af37;
+            padding: 1rem;
+            width: 200px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .inventory-toggle {
+            position: relative;
+            min-width: 30px;
+            width: 30px;
+            height: 60px;
+            background: rgba(20, 12, 12, 0.95);
+            border: 2px solid #d4af37;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            margin-left: -2px;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        /* Tutorial overlay met cutout mogelijkheid */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .tutorial-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        /* Cutout classes voor verschillende UI elementen */
+        .tutorial-overlay.show-inventory::before {
+            -webkit-mask: linear-gradient(to right, 
+                #000 0px, #000 200px, 
+                transparent 200px, transparent 100%);
+            mask: linear-gradient(to right, 
+                #000 0px, #000 200px, 
+                transparent 200px, transparent 100%);
+        }
+
+        .tutorial-overlay.show-player::before {
+            -webkit-mask: radial-gradient(circle at var(--player-x) var(--player-y), 
+                transparent 0, transparent 50px, 
+                #000 51px);
+            mask: radial-gradient(circle at var(--player-x) var(--player-y), 
+                transparent 0, transparent 50px, 
+                #000 51px);
+        }
+
+        .tutorial-overlay.show-herbs::before {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .tutorial-box {
+            background: rgba(20, 12, 12, 0.95);
+            border: 3px solid #d4af37;
+            padding: 2rem;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            z-index: 10000;
+        }
+
+        .tutorial-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #d4af37;
+        }
+
+        .tutorial-content {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .tutorial-next {
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            font-family: 'MedievalSharp', cursive;
+            transition: all 0.3s ease;
+        }
+
+        .tutorial-next:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight-element {
+            position: relative;
+            z-index: 9998;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        /* Update grid overlay om onzichtbaar te maken */
+        #grid-overlay {
+            display: none; /* of opacity: 0; */
+        }
+
+        /* Specifieke highlight voor herbs tijdens tutorial */
+        .inventory-section.highlight-herbs {
+            position: relative;
+            z-index: 10000;
+        }
+
+        .inventory-section.highlight-herbs .section-header,
+        .inventory-section.highlight-herbs .section-content {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .inventory-section.highlight-herbs .item-card {
+            animation: cardPulse 2s infinite;
+        }
+
+        @keyframes cardPulse {
+            0% { transform: translateX(0); background: rgba(20, 12, 12, 0.95); }
+            50% { transform: translateX(5px); background: rgba(212, 175, 55, 0.2); }
+            100% { transform: translateX(0); background: rgba(20, 12, 12, 0.95); }
+        }
+
+        /* Verwijder message-log styles en voeg tooltip styles toe */
+        .tooltip {
+            position: absolute;
+            background: rgba(20, 12, 12, 0.95);
+            border: 2px solid #d4af37;
+            padding: 1rem;
+            max-width: 300px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            text-align: left;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .tooltip-title {
+            font-size: 1.1rem;
+            color: #d4af37;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #d4af37;
+            padding-bottom: 0.3rem;
+        }
+
+        .tooltip-description {
+            font-size: 0.9rem;
+            color: #a88c2c;
+            line-height: 1.4;
+        }
+
+        .item-card {
+            position: relative;
+        }
+
+        /* Verwijder oude status styles */
+        #status {
+            display: none;
+        }
+
+        /* Voeg nieuwe status effect indicator toe */
+        .status-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(20, 12, 12, 0.95);
+            border: 2px solid #d4af37;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: #d4af37;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div class="inventory-wrapper">
+            <div id="inventory">
+                <div class="inventory-content">
+                    <h3 class="panel-title">Inventory</h3>
+                    
+                    <div class="inventory-section">
+                        <div class="section-header">
+                            <span>Herbs</span>
+                            <span class="toggle-icon">›</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="item-card">
+                                <div class="item-name">Sage</div>
+                                <div class="item-description">A sacred herb known for its purifying properties.</div>
+                                <div class="item-quantity">x3</div>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-name">Thyme</div>
+                                <div class="item-description">Strengthens the mind against dark influences.</div>
+                                <div class="item-quantity">x2</div>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-name">Lavender</div>
+                                <div class="item-description">Calms the spirit and reveals hidden truths.</div>
+                                <div class="item-quantity">x1</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="inventory-section">
+                        <div class="section-header">
+                            <span>Tools</span>
+                            <span class="toggle-icon">›</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="item-card">
+                                <div class="item-name">Mirror Shard</div>
+                                <div class="item-description">Reflects and redirects light sources.</div>
+                                <div class="item-quantity">x1</div>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-name">Lantern</div>
+                                <div class="item-description">A reliable source of light in dark places.</div>
+                                <div class="item-quantity">x1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inventory-toggle">
+                <span>‹</span>
+            </div>
+        </div>
+
+        <div id="game-area">
+            <div class="status-indicator">Status: Normal</div>
+            <div id="player"></div>
+        </div>
+    </div>
+
+    <!-- Voeg de tutorial overlay toe aan de body -->
+    <div class="tutorial-overlay">
+        <div class="tutorial-box">
+            <div class="tutorial-title"></div>
+            <div class="tutorial-content"></div>
+            <button class="tutorial-next">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        const player = document.getElementById('player');
+        const GRID_SIZE = 32; // Grootte van elke grid cel
+        
+        // Grid-gebaseerde positie
+        let gridX = Math.floor(window.innerWidth / (2 * GRID_SIZE));
+        let gridY = Math.floor(window.innerHeight / (2 * GRID_SIZE));
+        
+        // Functie om speler te verplaatsen naar grid positie
+        function updatePlayerPosition() {
+            playerX = gridX * GRID_SIZE;
+            playerY = gridY * GRID_SIZE;
+            player.style.left = `${playerX}px`;
+            player.style.top = `${playerY}px`;
+
+            // Update cutout positie als de tutorial actief is
+            const overlay = document.querySelector('.tutorial-overlay');
+            if (overlay.classList.contains('show-player')) {
+                const playerRect = player.getBoundingClientRect();
+                overlay.style.setProperty('--player-x', `${playerRect.left + playerRect.width/2}px`);
+                overlay.style.setProperty('--player-y', `${playerRect.top + playerRect.height/2}px`);
+            }
+        }
+        
+        // Plaats speler initieel in het midden
+        updatePlayerPosition();
+
+        // Movement cooldown systeem
+        let canMove = true;
+        const MOVE_COOLDOWN = 150; // milliseconds tussen bewegingen
+
+        function setMoveCooldown() {
+            canMove = false;
+            setTimeout(() => {
+                canMove = true;
+            }, MOVE_COOLDOWN);
+        }
+
+        // Keyboard handler voor beweging
+        document.addEventListener('keydown', (e) => {
+            if (!canMove || gamePaused) return;
+
+            let moved = false;
+
+            switch(e.key) {
+                case 'w':
+                case 'ArrowUp':
+                    gridY--;
+                    moved = true;
+                    break;
+                case 's':
+                case 'ArrowDown':
+                    gridY++;
+                    moved = true;
+                    break;
+                case 'a':
+                case 'ArrowLeft':
+                    gridX--;
+                    moved = true;
+                    break;
+                case 'd':
+                case 'ArrowRight':
+                    gridX++;
+                    moved = true;
+                    break;
+            }
+
+            if (moved) {
+                // Speel bewegingsgeluid
+                const audio = new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA==');
+                audio.volume = 0.2;
+                audio.play();
+
+                updatePlayerPosition();
+                setMoveCooldown();
+            }
+        });
+
+        // Voeg game pause functionaliteit toe
+        let gamePaused = false;
+
+        // Start tutorial bij het laden van het spel
+        window.addEventListener('load', () => {
+            showTutorial(0);
+        });
+
+        // Voeg tooltip functionaliteit toe
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.innerHTML = `
+            <div class="tooltip-title"></div>
+            <div class="tooltip-description"></div>
+        `;
+        document.body.appendChild(tooltip);
+
+        // Update item kaart interactie met tooltips
+        document.querySelectorAll('.item-card').forEach(card => {
+            card.addEventListener('mouseover', (e) => {
+                const itemName = card.querySelector('.item-name').textContent;
+                const itemDesc = card.querySelector('.item-description').textContent;
+                
+                tooltip.querySelector('.tooltip-title').textContent = itemName;
+                tooltip.querySelector('.tooltip-description').textContent = itemDesc;
+                
+                // Positie tooltip naast het item
+                const rect = card.getBoundingClientRect();
+                tooltip.style.left = `${rect.right + 10}px`;
+                tooltip.style.top = `${rect.top}px`;
+                
+                // Toon tooltip
+                tooltip.style.opacity = '1';
+
+                // Speel geluid af
+                const audio = new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA==');
+                audio.volume = 0.1;
+                audio.play();
+            });
+
+            card.addEventListener('mouseout', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+
+        // Voorkom dat tooltip buiten het scherm gaat
+        function adjustTooltipPosition() {
+            const tooltipRect = tooltip.getBoundingClientRect();
+            if (tooltipRect.right > window.innerWidth) {
+                tooltip.style.left = `${window.innerWidth - tooltipRect.width - 10}px`;
+            }
+            if (tooltipRect.bottom > window.innerHeight) {
+                tooltip.style.top = `${window.innerHeight - tooltipRect.height - 10}px`;
+            }
+        }
+
+        // Update tooltip positie wanneer het wordt getoond
+        tooltip.addEventListener('transitionend', adjustTooltipPosition);
+
+        // Voeg inventory interactie toe
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const isExpanded = content.classList.contains('expanded');
+                
+                // Toggle de expanded class
+                content.classList.toggle('expanded');
+                
+                // Speel een geluid af bij het openen/sluiten
+                const audio = new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA==');
+                audio.play();
+            });
+        });
+
+        // Item kaart interactie
+        document.querySelectorAll('.item-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const itemName = card.querySelector('.item-name').textContent;
+                const itemDesc = card.querySelector('.item-description').textContent;
+                showMessage(`${itemName}: ${itemDesc}`);
+            });
+        });
+
+        // Voeg inventory toggle functionaliteit toe
+        const inventoryToggle = document.querySelector('.inventory-toggle');
+        const gameContainer = document.getElementById('game-container');
+        
+        inventoryToggle.addEventListener('click', () => {
+            gameContainer.classList.toggle('inventory-collapsed');
+            
+            // Speel een geluid af bij het in/uitklappen
+            const audio = new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA==');
+            audio.play();
+        });
+
+        // Voeg sneltoets toe voor inventory toggle (I-toets)
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'i') {
+                gameContainer.classList.toggle('inventory-collapsed');
+            }
+        });
+
+        // Tutorial systeem
+        const tutorials = [
+            {
+                title: "Welcome to The Unhallowed Parish",
+                content: "You find yourself in the mysterious town of Oakhaven. Your mission is to uncover and purify the parasitic entity that plagues this land.",
+                highlight: null
+            },
+            {
+                title: "Movement",
+                content: "Use WASD or Arrow keys to move around the town. Explore carefully - secrets lurk in every corner.",
+                highlight: null
+            },
+            {
+                title: "Herbs & Remedies",
+                content: "Collect herbs throughout the town to craft powerful remedies. Different combinations yield different effects.",
+                highlight: "#herbs-list",
+                showHerbs: true
+            },
+            {
+                title: "Light Manipulation",
+                content: "Use mirrors and lanterns to manipulate light sources. This will be crucial for solving puzzles and revealing hidden paths.",
+                highlight: null
+            },
+            {
+                title: "Ritual Sites",
+                content: "Find and purify the seven ritual sites to weaken the parasitic entity. Watch for environmental anomalies that may guide your way.",
+                highlight: null
+            }
+        ];
+
+        let currentTutorial = 0;
+
+        function showTutorial(index) {
+            const tutorial = tutorials[index];
+            const overlay = document.querySelector('.tutorial-overlay');
+            const title = overlay.querySelector('.tutorial-title');
+            const content = overlay.querySelector('.tutorial-content');
+            
+            // Reset vorige highlights
+            document.querySelectorAll('.highlight-herbs').forEach(el => {
+                el.classList.remove('highlight-herbs');
+            });
+            overlay.className = 'tutorial-overlay';
+
+            // Update tutorial content
+            title.textContent = tutorial.title;
+            content.textContent = tutorial.content;
+            
+            // Toon overlay
+            overlay.style.display = 'flex';
+
+            // Speciale behandeling voor herbs tutorial
+            if (tutorial.showHerbs) {
+                overlay.classList.add('show-herbs');
+                // Open de herbs sectie en highlight
+                const herbsSection = document.querySelector('.inventory-section');
+                const herbsContent = herbsSection.querySelector('.section-content');
+                herbsSection.classList.add('highlight-herbs');
+                herbsContent.classList.add('expanded');
+            }
+
+            // Pauzeer het spel tijdens tutorial
+            gamePaused = true;
+        }
+
+        // Tutorial navigatie
+        document.querySelector('.tutorial-next').addEventListener('click', () => {
+            currentTutorial++;
+            if (currentTutorial < tutorials.length) {
+                showTutorial(currentTutorial);
+            } else {
+                // Einde tutorial
+                document.querySelector('.tutorial-overlay').style.display = 'none';
+                gamePaused = false;
+            }
+        });
+
+        // Functie om status te updaten
+        function updateStatus(status) {
+            const statusIndicator = document.querySelector('.status-indicator');
+            statusIndicator.textContent = `Status: ${status}`;
+        }
+    </script>
+</body>
+</html> 
