@@ -476,366 +476,384 @@
                 opacity: 0;
             }
         }
+
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quick-tutorial {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(212, 184, 134, 0.5);
+            padding: 2rem;
+            max-width: 600px;
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+        }
+
+        .tutorial-header {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: 3px;
+        }
+
+        .tutorial-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tutorial-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .key-hint {
+            background: rgba(212, 184, 134, 0.2);
+            border: 1px solid rgba(212, 184, 134, 0.5);
+            padding: 0.5rem 1rem;
+            min-width: 80px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .hint-description {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+        }
+
+        .tutorial-continue {
+            margin-top: 2rem;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tutorial-continue:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        /* Add these styles */
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            cursor: pointer;
+        }
+
+        .custom-checkbox input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkbox-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .checkbox-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: #d4b886;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .checkbox-slider {
+            background: rgba(212, 184, 134, 0.2);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        input:checked + .checkbox-slider:before {
+            transform: translateX(24px);
+        }
+
+        .setting-label {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #d4b886;
+        }
+
+        /* Add these styles */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 200px;
+            height: 4px;
+            background: rgba(212, 184, 134, 0.2);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #d4b886;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: rgba(212, 184, 134, 0.8);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #d4b886;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .volume-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            background: rgba(212, 184, 134, 0.8);
+        }
+
+        /* Add this style for the settings menu */
+        .settings-menu .menu {
+            margin-top: 3rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>The Unhallowed Parish</h1>
-        <div class="subtitle">A Tale of Dark Secrets</div>
-        <div class="menu">
-            <a class="menu-item">Begin Journey</a>
-            <a class="menu-item">Continue</a>
-            <a class="menu-item">Grimoire</a>
-            <a class="menu-item" data-action="settings">Settings</a>
-            <a class="menu-item">Exit</a>
+        <div class="main-menu">
+            <h1>The Unhallowed Parish</h1>
+            <div class="subtitle">A Tale of Dark Secrets</div>
+            <div class="menu">
+                <a class="menu-item">Begin Journey</a>
+                <a class="menu-item">Continue</a>
+                <a class="menu-item">Grimoire</a>
+                <a class="menu-item" data-action="settings">Settings</a>
+                <a class="menu-item">Exit</a>
+            </div>
+        </div>
+
+        <div class="settings-menu" style="display: none;">
+            <h1>Settings</h1>
+            <div class="settings-container">
+                <div class="setting-item">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="musicToggle" checked>
+                        <span class="checkbox-slider"></span>
+                    </label>
+                    <span class="setting-label">Background Music</span>
+                </div>
+                <div class="volume-control">
+                    <span class="setting-label">Volume</span>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="40">
+                </div>
+                <div class="setting-item">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="soundToggle" checked>
+                        <span class="checkbox-slider"></span>
+                    </label>
+                    <span class="setting-label">Sound Effects</span>
+                </div>
+            </div>
+            <div class="menu">
+                <a class="menu-item back-button">Back to Menu</a>
+            </div>
         </div>
     </div>
 
     <div class="version">Alpha v0.1</div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Audio Context setup
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const menuMusic = new Audio('ASSETS/MENU.mp3');
-            menuMusic.loop = true;
-            menuMusic.volume = 0.4;
+        // Create audio context and menu music first
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const menuMusic = new Audio('ASSETS/MENU.mp3');
+        menuMusic.loop = true;
 
-            // Story sequence
-            const storySequence = [
-                {
-                    text: "I remember that night as if it were yesterday. The bells of Oakhaven's parish struck midnight, and as a devoted acolyte, I was preparing the church for the next day's service when the mist began to creep in...",
-                },
-                {
-                    text: "Having served the church since childhood, I thought I understood faith and devotion. But the whispers I began to hear during evening prayers, the shadows that moved against the candlelight - they tested my beliefs in ways I never imagined...",
-                },
-                {
-                    text: "When members of our congregation started to change, speaking in tongues that made the holy water boil, I knew our sacred grounds had been defiled by something ancient. Something that had been waiting beneath our feet all along...",
-                },
-                {
-                    text: "Now, after years of studying forbidden texts and seeking guidance through prayer, I have returned to face what lurks within these hallowed walls. May God grant me the strength to cleanse this parish of its unholy taint...",
-                }
-            ];
+        // Get DOM elements
+        const musicToggle = document.getElementById('musicToggle');
+        const soundToggle = document.getElementById('soundToggle');
+        const volumeSlider = document.getElementById('volumeSlider');
 
-            // Tutorial sequence
-            const tutorialSequence = [
-                {
-                    dialogue: "Welcome to your first encounter. As a man of faith, you'll face many corrupted beings in your journey.",
-                    showEnemy: false,
-                    type: 'intro'
-                },
-                {
-                    dialogue: "This twisted soul before you was once a fellow believer. Now, it's consumed by the parish's dark influence.",
-                    showEnemy: true,
-                    showStats: true,
-                    type: 'enemy_intro'
-                },
-                {
-                    dialogue: "You have several sacred weapons at your disposal. Choose wisely, as each action consumes Faith Points.",
-                    showEnemy: true,
-                    showStats: true,
-                    showActions: true,
-                    type: 'combat_intro'
-                }
-            ];
-
-            // Voeg deze battle state toe aan het begin van je script
-            const battleState = {
-                player: {
-                    health: 100,
-                    faith: 100,
-                    maxHealth: 100,
-                    maxFaith: 100
-                },
-                enemy: {
-                    health: 100,
-                    maxHealth: 100,
-                    name: "Corrupted Soul"
-                }
+        function saveSettings() {
+            const settings = {
+                musicEnabled: musicToggle.checked,
+                soundEnabled: soundToggle.checked,
+                volume: volumeSlider.value / 100
             };
+            localStorage.setItem('gameSettings', JSON.stringify(settings));
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'gameSettings',
+                newValue: JSON.stringify(settings)
+            }));
+        }
 
-            function showStoryModal(index) {
-                const mainMenu = document.querySelector('.container');
-                mainMenu.style.display = 'none';
-
-                const modal = document.createElement('div');
-                modal.className = 'story-modal';
-                modal.innerHTML = `
-                    <div class="story-content">
-                        <div class="character-portrait">
-                            <div class="character-name">David</div>
-                        </div>
-                        <div class="dialogue-bubble">
-                            ${storySequence[index].text}
-                        </div>
-                    </div>
-                    <button class="continue-btn">${index < storySequence.length - 1 ? 'Continue' : 'Begin Game'}</button>
-                `;
-
-                const overlay = document.createElement('div');
-                overlay.className = 'modal-overlay';
-
-                document.body.appendChild(overlay);
-                document.body.appendChild(modal);
-
-                overlay.style.display = 'block';
-                modal.style.display = 'block';
-
-                const continueBtn = modal.querySelector('.continue-btn');
-                continueBtn.addEventListener('click', () => {
-                    if (index < storySequence.length - 1) {
-                        modal.remove();
-                        overlay.remove();
-                        showStoryModal(index + 1);
-                    } else {
-                        modal.remove();
-                        overlay.remove();
-                        console.log("Starting game...");
-                    }
-                });
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('gameSettings'));
+            if (settings) {
+                musicToggle.checked = settings.musicEnabled;
+                soundToggle.checked = settings.soundEnabled;
+                volumeSlider.value = settings.volume * 100;
+                
+                if (settings.musicEnabled) {
+                    menuMusic.volume = settings.volume;
+                    menuMusic.play().catch(err => console.log('Autoplay prevented:', err));
+                } else {
+                    menuMusic.volume = 0;
+                    menuMusic.pause();
+                }
             }
+        }
 
-            // Sound functions
-            function createHoverSound() {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                const filter = audioContext.createBiquadFilter();
-                
-                oscillator.connect(filter);
-                filter.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-                oscillator.frequency.linearRampToValueAtTime(400, audioContext.currentTime + 0.1);
-                
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(1000, audioContext.currentTime);
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.03, audioContext.currentTime + 0.05);
-                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.2);
-            }
-
-            function createClickSound() {
-                const oscillator1 = audioContext.createOscillator();
-                const oscillator2 = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                const filter = audioContext.createBiquadFilter();
-                
-                oscillator1.connect(filter);
-                oscillator2.connect(filter);
-                filter.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator1.type = 'sine';
-                oscillator2.type = 'triangle';
-                
-                oscillator1.frequency.setValueAtTime(200, audioContext.currentTime);
-                oscillator2.frequency.setValueAtTime(300, audioContext.currentTime);
-                
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(500, audioContext.currentTime);
-                filter.Q.value = 1;
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.05, audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
-                
-                oscillator1.start();
-                oscillator2.start();
-                oscillator1.stop(audioContext.currentTime + 0.3);
-                oscillator2.stop(audioContext.currentTime + 0.3);
-            }
-
-            // Event listeners
-            document.querySelector('.menu-item:first-child').addEventListener('click', () => {
-                showStoryModal(0);
-            });
-
-            // Menu music
-            window.addEventListener('focus', () => {
-                menuMusic.play().catch(err => {
-                    console.log('Autoplay prevented:', err);
-                });
-            });
-
-            window.addEventListener('blur', () => {
+        // Add event listeners for settings controls
+        musicToggle.addEventListener('change', () => {
+            if (musicToggle.checked) {
+                menuMusic.volume = volumeSlider.value / 100;
+                menuMusic.play().catch(err => console.log('Autoplay prevented:', err));
+            } else {
+                menuMusic.volume = 0;
                 menuMusic.pause();
+            }
+            saveSettings();
+        });
+
+        soundToggle.addEventListener('change', () => {
+            window.soundEnabled = soundToggle.checked;
+            saveSettings();
+        });
+
+        volumeSlider.addEventListener('input', () => {
+            const volume = volumeSlider.value / 100;
+            if (musicToggle.checked) {
+                menuMusic.volume = volume;
+            }
+            window.globalVolume = volume;
+            saveSettings();
+        });
+
+        // Add settings menu handlers
+            document.querySelector('[data-action="settings"]').addEventListener('click', () => {
+                const mainMenu = document.querySelector('.main-menu');
+                const settingsMenu = document.querySelector('.settings-menu');
+                mainMenu.style.display = 'none';
+                settingsMenu.style.display = 'block';
             });
 
-            document.body.addEventListener('click', () => {
-                if (menuMusic.paused) {
+            document.querySelector('.back-button').addEventListener('click', () => {
+                const mainMenu = document.querySelector('.main-menu');
+                const settingsMenu = document.querySelector('.settings-menu');
+                settingsMenu.style.display = 'none';
+                mainMenu.style.display = 'block';
+            });
+
+        // Load settings on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            
+            // Start music on first click
+            window.addEventListener('click', () => {
+                if (musicToggle.checked && menuMusic.paused) {
                     menuMusic.play().catch(err => {
                         console.log('Playback prevented:', err);
                     });
                 }
             }, { once: true });
-
-            // Voeg deze battle functies toe
-            window.handleAttack = function() {
-                if (battleState.player.faith >= 20) {
-                    const damage = Math.floor(Math.random() * 20) + 15;
-                    battleState.enemy.health = Math.max(0, battleState.enemy.health - damage);
-                    battleState.player.faith -= 20;
-                    
-                    const enemy = document.querySelector('.enemy-character');
-                    enemy.classList.add('attack-animation');
-                    setTimeout(() => enemy.classList.remove('attack-animation'), 500);
-                    
-                    showDamageText(enemy, damage, '#ff4444');
-                    showActionText(enemy, "Sacred Strike!");
-                    updateStats();
-                    
-                    if (battleState.enemy.health <= 0) {
-                        endTutorialBattle(true);
-                    } else {
-                        enemyTurn();
-                    }
-                } else {
-                    showActionText(document.querySelector('.player-character'), "Not enough Faith!");
-                }
-            };
-
-            window.handleHolyWater = function() {
-                if (battleState.player.faith >= 30) {
-                    const damage = Math.floor(Math.random() * 25) + 25;
-                    battleState.enemy.health = Math.max(0, battleState.enemy.health - damage);
-                    battleState.player.faith -= 30;
-                    
-                    const enemy = document.querySelector('.enemy-character');
-                    enemy.classList.add('attack-animation');
-                    enemy.style.filter = 'brightness(1.5) sepia(1) hue-rotate(190deg)';
-                    setTimeout(() => {
-                        enemy.classList.remove('attack-animation');
-                        enemy.style.filter = '';
-                    }, 500);
-                    
-                    showDamageText(enemy, damage, '#4a90e2');
-                    showActionText(enemy, "Holy Purge!", '#4a90e2');
-                    updateStats();
-                    
-                    if (battleState.enemy.health <= 0) {
-                        endTutorialBattle(true);
-                    } else {
-                        enemyTurn();
-                    }
-                } else {
-                    showActionText(document.querySelector('.player-character'), "Not enough Faith!");
-                }
-            };
-
-            window.handlePurify = function() {
-                if (battleState.player.faith >= 50) {
-                    const damage = Math.floor(Math.random() * 30) + 45;
-                    battleState.enemy.health = Math.max(0, battleState.enemy.health - damage);
-                    battleState.player.faith -= 50;
-                    
-                    const enemy = document.querySelector('.enemy-character');
-                    enemy.classList.add('attack-animation');
-                    enemy.style.filter = 'brightness(2) sepia(1) hue-rotate(300deg)';
-                    setTimeout(() => {
-                        enemy.classList.remove('attack-animation');
-                        enemy.style.filter = '';
-                    }, 1000);
-                    
-                    showDamageText(enemy, damage, '#ffd700');
-                    showActionText(enemy, "Divine Judgment!", '#ffd700');
-                    updateStats();
-                    
-                    if (battleState.enemy.health <= 0) {
-                        endTutorialBattle(true, "purified");
-                    } else {
-                        enemyTurn();
-                    }
-                } else {
-                    showActionText(document.querySelector('.player-character'), "Not enough Faith!");
-                }
-            };
-
-            function enemyTurn() {
-                setTimeout(() => {
-                    const damage = Math.floor(Math.random() * 15) + 10;
-                    battleState.player.health = Math.max(0, battleState.player.health - damage);
-                    
-                    const player = document.querySelector('.player-character');
-                    player.classList.add('attack-animation');
-                    player.style.filter = 'brightness(0.7) sepia(0.5) hue-rotate(300deg)';
-                    setTimeout(() => {
-                        player.classList.remove('attack-animation');
-                        player.style.filter = '';
-                    }, 500);
-                    
-                    showDamageText(player, damage, '#ff0000');
-                    showActionText(player, "Corrupted Strike!", '#ff0000');
-                    updateStats();
-                    
-                    if (battleState.player.health <= 0) {
-                        endTutorialBattle(false);
-                    }
-                }, 1000);
-            }
-
-            function showDamageText(target, amount, color = '#d4b886') {
-                const textContainer = target.classList.contains('enemy-character') ? 
-                    target.parentElement.querySelector('.enemy-text-container') : 
-                    target;
-                
-                const damageText = document.createElement('div');
-                damageText.className = 'damage-text';
-                damageText.textContent = `-${amount}`;
-                damageText.style.color = color;
-                textContainer.appendChild(damageText);
-                
-                setTimeout(() => damageText.remove(), 1500);
-            }
-
-            function showActionText(target, text, color = '#d4b886') {
-                const textContainer = target.classList.contains('enemy-character') ? 
-                    target.parentElement.querySelector('.enemy-text-container') : 
-                    target;
-                
-                const actionText = document.createElement('div');
-                actionText.className = 'action-text';
-                actionText.textContent = text;
-                actionText.style.color = color;
-                textContainer.appendChild(actionText);
-                
-                setTimeout(() => actionText.remove(), 2500);
-            }
-
-            function updateStats() {
-                const playerHealth = document.querySelector('.health-bar-fill');
-                const playerFaith = document.querySelector('.faith-bar-fill');
-                const enemyHealth = document.querySelector('.enemy-health-fill');
-                
-                if (playerHealth) playerHealth.style.width = `${(battleState.player.health / battleState.player.maxHealth) * 100}%`;
-                if (playerFaith) playerFaith.style.width = `${(battleState.player.faith / battleState.player.maxFaith) * 100}%`;
-                if (enemyHealth) enemyHealth.style.width = `${(battleState.enemy.health / battleState.enemy.maxHealth) * 100}%`;
-            }
-
-            function endTutorialBattle(victory, message = "defeated") {
-                const tutorialContainer = document.querySelector('.tutorial-container');
-                const dialogue = document.querySelector('.tutorial-dialogue');
-                
-                if (victory) {
-                    dialogue.textContent = `Well done! You've successfully ${message} the corrupted soul. Your journey now begins in earnest.`;
-                } else {
-                    dialogue.textContent = `The darkness proved too strong this time. But fear not, your faith will grow stronger.`;
-                }
-                
-                const continueBtn = tutorialContainer.querySelector('.continue-btn');
-                continueBtn.textContent = "Continue Journey";
-                continueBtn.onclick = () => {
-                    tutorialContainer.remove();
-                    // Start het echte spel hier
-                };
-            }
         });
+
+        // Add click handler for Begin Journey
+        document.querySelector('.menu-item:first-child').addEventListener('click', () => {
+            startQuickTutorial();
+        });
+
+        function startQuickTutorial() {
+            const tutorialOverlay = document.createElement('div');
+            tutorialOverlay.className = 'tutorial-overlay';
+            tutorialOverlay.innerHTML = `
+                <div class="quick-tutorial">
+                    <div class="tutorial-header">Basic Controls</div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-item">
+                            <div class="key-hint">Left Click</div>
+                            <div class="hint-description">Examine objects and interact with the environment</div>
+                        </div>
+                        <div class="tutorial-item">
+                            <div class="key-hint">E</div>
+                            <div class="hint-description">Open your inventory</div>
+                        </div>
+                        <div class="tutorial-item">
+                            <div class="key-hint">Space</div>
+                            <div class="hint-description">Use currently selected item</div>
+                        </div>
+                        <div class="tutorial-item">
+                            <div class="key-hint">ESC</div>
+                            <div class="hint-description">Open menu / Cancel action</div>
+                        </div>
+                    </div>
+                    <button class="tutorial-continue">Begin Your Journey</button>
+                </div>
+            `;
+
+            document.body.appendChild(tutorialOverlay);
+
+            const continueBtn = tutorialOverlay.querySelector('.tutorial-continue');
+            continueBtn.addEventListener('click', () => {
+                tutorialOverlay.remove();
+                window.location.href = 'game.html';
+            });
+        }
     </script>
 </body>
 </html> 

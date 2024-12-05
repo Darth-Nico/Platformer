@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Unhallowed Parish - Chapter 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            font-family: 'Cormorant Garamond', serif;
+            height: 100vh;
+            color: #d4b886;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            background: url('assets/church_background.jpg') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+
+        .player {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 300px;
+            background: url('assets/main_character (standing).png') no-repeat center;
+            background-size: contain;
+            z-index: 2;
+        }
+
+        .interaction-point {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(212, 184, 134, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .dialogue-box {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            padding: 2rem;
+            color: #d4b886;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            display: none;
+            z-index: 10;
+        }
+
+        .inventory {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+        }
+
+        .inventory-slot {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .inventory-slot img {
+            width: 25px;
+            height: 25px;
+            object-fit: contain;
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+        }
+
+        .stat-bar {
+            width: 200px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .stat-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .health-fill { background: #963030; }
+        .faith-fill { background: #4a90e2; }
+
+        .hint {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            font-style: italic;
+            max-width: 300px;
+        }
+
+        .character-dialogue {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            display: flex;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        .dialogue-portrait {
+            width: 150px;
+            height: 200px;
+            background: url('assets/main_character (talking bubble).png') no-repeat center;
+            background-size: contain;
+        }
+
+        .dialogue-bubble {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            padding: 1.5rem;
+            color: #d4b886;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .character-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #d4b886;
+        }
+
+        .interaction-point img {
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+        }
+
+        .inventory.hidden {
+            display: none;
+        }
+
+        .pause-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid rgba(212, 184, 134, 0.5);
+            padding: 2rem;
+            z-index: 100;
+            display: none;
+        }
+
+        .pause-menu button {
+            display: block;
+            width: 200px;
+            margin: 1rem auto;
+            padding: 0.8rem;
+            background: transparent;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pause-menu button:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        .inventory-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid rgba(212, 184, 134, 0.5);
+            padding: 2rem;
+            z-index: 100;
+            display: none;
+        }
+
+        .inventory-modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #d4b886;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .inventory-item {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .inventory-item img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+        }
+
+        .item-description {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            padding: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            z-index: 5;
+        }
+
+        .inventory-item:hover .item-description {
+            display: block;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            background: transparent;
+            color: #d4b886;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        .inventory-item.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-slot {
+            color: rgba(212, 184, 134, 0.3);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .skip-dialogue {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            background: transparent;
+            color: #d4b886;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .skip-dialogue:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="player"></div>
+        
+        <!-- Interaction points -->
+        <div class="interaction-point" style="top: 40%; left: 30%;" 
+             data-description="The altar candles flicker unnaturally, their flames bending away from the center. Something is affecting them..."
+             data-item="candle"
+             data-name="Blessed Candle">
+            <img src="assets/candle.png" alt="Candle">
+        </div>
+        
+        <div class="interaction-point" style="top: 35%; left: 70%;" 
+             data-description="A stained glass window depicting Saint Michael. The glass seems to ripple slightly, distorting the image in unsettling ways."
+             data-item="sanctified-glass-shard"
+             data-name="Sanctified Glass Shard">
+            <img src="assets/sanctified-glass-shard.png" alt="Glass Shard">
+        </div>
+    </div>
+
+    <div class="stats">
+        <div>Health</div>
+        <div class="stat-bar">
+            <div class="stat-fill health-fill" style="width: 100%"></div>
+        </div>
+        <div>Faith</div>
+        <div class="stat-bar">
+            <div class="stat-fill faith-fill" style="width: 100%"></div>
+        </div>
+    </div>
+
+    <div class="inventory">
+        <div class="inventory-slot" data-item="empty"></div>
+        <div class="inventory-slot" data-item="empty"></div>
+        <div class="inventory-slot" data-item="empty"></div>
+        <div class="inventory-slot" data-item="empty"></div>
+    </div>
+
+    <div class="hint">Click on glowing points to investigate. Press 'E' to open inventory, 'Space' to use items.</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add background music
+            const gameMusic = new Audio('ASSETS/MENU.mp3');
+            gameMusic.loop = true;
+            gameMusic.volume = 0.4;
+
+            // Auto-play music when game loads
+            window.addEventListener('click', () => {
+                if (gameMusic.paused) {
+                    gameMusic.play().catch(err => {
+                        console.log('Playback prevented:', err);
+                    });
+                }
+            }, { once: true });
+
+            // Handle music on tab focus/blur
+            window.addEventListener('focus', () => {
+                gameMusic.play().catch(err => {
+                    console.log('Autoplay prevented:', err);
+                });
+            });
+
+            window.addEventListener('blur', () => {
+                gameMusic.pause();
+            });
+
+            const dialogueBox = document.querySelector('.dialogue-box');
+            const interactionPoints = document.querySelectorAll('.interaction-point');
+            const inventorySlots = document.querySelectorAll('.inventory-slot');
+            let currentDialogue = null;
+
+            // Handle interaction points
+            interactionPoints.forEach(point => {
+                point.addEventListener('click', () => {
+                    showDialogue(point.dataset.description);
+                    if (point.dataset.item) {
+                        addToInventory(point.dataset.item, point.dataset.name);
+                        point.remove();
+                        createCollectSound();
+                    }
+                });
+            });
+
+            function showDialogue(text) {
+                clearTimeout(currentDialogue);
+                
+                const existingDialogue = document.querySelector('.character-dialogue');
+                if (existingDialogue) {
+                    existingDialogue.remove();
+                }
+
+                const dialogueElement = document.createElement('div');
+                dialogueElement.className = 'character-dialogue';
+                dialogueElement.innerHTML = `
+                    <div class="dialogue-portrait"></div>
+                    <div class="dialogue-bubble">
+                        <div class="character-name">David</div>
+                        ${text}
+                        <button class="skip-dialogue">→</button>
+                    </div>
+                `;
+                document.body.appendChild(dialogueElement);
+
+                const skipBtn = dialogueElement.querySelector('.skip-dialogue');
+                skipBtn.addEventListener('click', () => {
+                    dialogueElement.remove();
+                    clearTimeout(currentDialogue);
+                });
+
+                currentDialogue = setTimeout(() => {
+                    dialogueElement.remove();
+                }, 5000);
+            }
+
+            function addToInventory(itemName, itemDisplayName) {
+                const emptySlot = document.querySelector('.inventory-slot[data-item="empty"]');
+                if (emptySlot) {
+                    emptySlot.dataset.item = itemName;
+                    emptySlot.dataset.name = itemDisplayName;
+                    emptySlot.innerHTML = `<img src="assets/${itemName}.png" alt="${itemDisplayName}">`;
+                } else {
+                    showDialogue("I can't carry any more items.");
+                }
+            }
+
+            function createCollectSound() {
+                if (!window.soundEnabled) return;
+                
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3 * window.globalVolume, audioContext.currentTime + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.01 * window.globalVolume, audioContext.currentTime + 0.3);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+
+            // Add these variables
+            const inventory = document.querySelector('.inventory');
+            let selectedSlot = null;
+            let isPaused = false;
+
+            // Create pause menu
+            const pauseMenu = document.createElement('div');
+            pauseMenu.className = 'pause-menu';
+            pauseMenu.innerHTML = `
+                <button onclick="resumeGame()">Resume</button>
+                <button onclick="window.location.href='index.html'">Return to Menu</button>
+            `;
+            document.body.appendChild(pauseMenu);
+
+            // Update keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (isPaused && e.key !== 'Escape') return;
+
+                switch(e.key) {
+                    case 'e':
+                    case 'E':
+                        toggleInventoryModal();
+                        break;
+                    case ' ':
+                        if (selectedSlot && selectedSlot.dataset.item !== 'empty') {
+                            useItem(selectedSlot.dataset.item, selectedSlot.dataset.name);
+                        }
+                        break;
+                    case 'Escape':
+                        togglePause();
+                        break;
+                }
+            });
+
+            // Add these functions
+            function togglePause() {
+                isPaused = !isPaused;
+                pauseMenu.style.display = isPaused ? 'block' : 'none';
+                if (isPaused && gameMusic.volume > 0) {
+                    gameMusic.volume = window.globalVolume * 0.1;
+                } else if (!isPaused && settings?.musicEnabled) {
+                    gameMusic.volume = window.globalVolume;
+                }
+            }
+
+            window.resumeGame = function() {
+                togglePause();
+            }
+
+            function useItem(itemName, itemDisplayName) {
+                showDialogue(`*Using ${itemDisplayName}*`);
+                createCollectSound();
+            }
+
+            // Update inventory interactions
+            inventorySlots.forEach(slot => {
+                slot.addEventListener('click', () => {
+                    if(slot.dataset.item !== 'empty') {
+                        if (selectedSlot === slot) {
+                            slot.style.border = '1px solid rgba(212, 184, 134, 0.3)';
+                            selectedSlot = null;
+                            showDialogue(`*Unselected ${slot.dataset.name}*`);
+                        } else {
+                            if (selectedSlot) {
+                                selectedSlot.style.border = '1px solid rgba(212, 184, 134, 0.3)';
+                            }
+                            slot.style.border = '2px solid #d4b886';
+                            selectedSlot = slot;
+                            showDialogue(`*Selected ${slot.dataset.name}*`);
+                        }
+                    }
+                });
+            });
+
+            // Add item descriptions object
+            const itemDescriptions = {
+                'candle': {
+                    name: 'Blessed Candle',
+                    description: 'A consecrated candle from the altar. Its flame burns with unusual intensity, useful for revealing hidden truths or warding off dark entities.'
+                },
+                'sanctified-glass-shard': {
+                    name: 'Sanctified Glass Shard',
+                    description: 'A fragment of the stained glass window. The holy imagery within seems to resonate with divine energy, capable of piercing through unholy barriers.'
+                }
+            };
+
+            // Update the E key handler
+            function toggleInventoryModal() {
+                const existingModal = document.querySelector('.inventory-modal');
+                if (existingModal) {
+                    // Update the inventory grid content before showing/hiding
+                    const inventoryGrid = existingModal.querySelector('.inventory-grid');
+                    inventoryGrid.innerHTML = Array.from(document.querySelectorAll('.inventory-slot')).map(slot => {
+                        if (slot.dataset.item === 'empty') {
+                            return `
+                                <div class="inventory-item empty">
+                                    <span class="empty-slot">Empty</span>
+                                </div>
+                            `;
+                        }
+                        return `
+                            <div class="inventory-item" data-item="${slot.dataset.item}">
+                                <img src="${slot.querySelector('img').src}" alt="${slot.dataset.name}">
+                                <div class="item-description">
+                                    <strong>${itemDescriptions[slot.dataset.item]?.name || slot.dataset.name}</strong><br>
+                                    ${itemDescriptions[slot.dataset.item]?.description || 'No description available.'}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    existingModal.style.display = existingModal.style.display === 'none' ? 'block' : 'none';
+                    return;
+                }
+
+                const modal = document.createElement('div');
+                modal.className = 'inventory-modal';
+                modal.innerHTML = `
+                    <button class="modal-close">×</button>
+                    <div class="inventory-modal-title">Inventory</div>
+                    <div class="inventory-grid">
+                        ${Array.from(document.querySelectorAll('.inventory-slot')).map(slot => {
+                            if (slot.dataset.item === 'empty') {
+                                return `
+                                    <div class="inventory-item empty">
+                                        <span class="empty-slot">Empty</span>
+                                    </div>
+                                `;
+                            }
+                            return `
+                                <div class="inventory-item" data-item="${slot.dataset.item}">
+                                    <img src="${slot.querySelector('img').src}" alt="${slot.dataset.name}">
+                                    <div class="item-description">
+                                        <strong>${itemDescriptions[slot.dataset.item]?.name || slot.dataset.name}</strong><br>
+                                        ${itemDescriptions[slot.dataset.item]?.description || 'No description available.'}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+
+                const closeBtn = modal.querySelector('.modal-close');
+                closeBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            }
+
+            const settings = JSON.parse(localStorage.getItem('gameSettings'));
+            if (settings) {
+                const volume = settings.volume;
+                window.globalVolume = volume;
+                window.soundEnabled = settings.soundEnabled;
+                
+                // Apply music settings
+                if (settings.musicEnabled) {
+                    gameMusic.volume = volume;
+                    gameMusic.play().catch(err => console.log('Autoplay prevented:', err));
+                } else {
+                    gameMusic.volume = 0;
+                    gameMusic.pause();
+                }
+
+                // Listen for settings changes
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'gameSettings') {
+                        const newSettings = JSON.parse(e.newValue);
+                        window.globalVolume = newSettings.volume;
+                        window.soundEnabled = newSettings.soundEnabled;
+                        
+                        if (newSettings.musicEnabled) {
+                            gameMusic.volume = newSettings.volume;
+                            gameMusic.play().catch(err => console.log('Autoplay prevented:', err));
+                        } else {
+                            gameMusic.volume = 0;
+                            gameMusic.pause();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
