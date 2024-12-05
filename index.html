@@ -4,198 +4,614 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Unhallowed Parish</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
-        
-        body {
+        * {
             margin: 0;
             padding: 0;
-            background: #1a0f0f;
-            font-family: 'MedievalSharp', cursive;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #d4af37;
-            position: relative;
-            overflow: hidden;
+            box-sizing: border-box;
         }
 
-        .menu-container {
-            background-color: rgba(20, 12, 12, 0.95);
-            padding: 3rem;
-            border: 3px solid #d4af37;
-            border-radius: 5px;
-            text-align: center;
-            max-width: 600px;
-            width: 80%;
-            position: relative;
-        }
-
-        .menu-container::before,
-        .menu-container::after {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 3px solid #d4af37;
-        }
-
-        .menu-container::before {
-            top: -3px;
-            left: -3px;
-            border-right: none;
-            border-bottom: none;
-        }
-
-        .menu-container::after {
-            bottom: -3px;
-            right: -3px;
-            border-left: none;
-            border-top: none;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            position: relative;
-        }
-
-        h1::before,
-        h1::after {
-            content: '†';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 2rem;
-            color: #d4af37;
-            opacity: 0.7;
-        }
-
-        h1::before {
-            left: -40px;
-        }
-
-        h1::after {
-            right: -40px;
-        }
-
-        .menu-buttons {
+        body {
+            background: url('https://images.unsplash.com/photo-1619867114633-f2844b08b821?q=80') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Cormorant Garamond', serif;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-        }
-
-        button {
-            background-color: transparent;
-            border: 2px solid #d4af37;
-            color: #d4af37;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            font-family: 'MedievalSharp', cursive;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+            color: #d4b886;
             position: relative;
             overflow: hidden;
         }
 
-        button::before {
-            content: '❧';
-            position: absolute;
-            left: 10px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        button::after {
-            content: '❧';
-            position: absolute;
-            right: 10px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            transform: scaleX(-1);
-        }
-
-        button:hover {
-            background-color: rgba(212, 175, 55, 0.1);
-            color: #d4af37;
-            transform: scale(1.05);
-            padding-left: 3rem;
-            padding-right: 3rem;
-        }
-
-        button:hover::before,
-        button:hover::after {
-            opacity: 1;
-        }
-
-        .decorative-border {
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            border: 15px solid #140a0a;
+            background: linear-gradient(
+                rgba(0, 0, 0, 0.85) 0%,
+                rgba(0, 0, 0, 0.75) 50%,
+                rgba(0, 0, 0, 0.85) 100%
+            );
+            z-index: 1;
             pointer-events: none;
-            z-index: 1000;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                circle at center,
+                transparent 0%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 4.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(212, 184, 134, 0.3),
+                         2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 6px;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4b886, transparent);
+            margin: 1rem auto;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            letter-spacing: 3px;
+            color: rgba(212, 184, 134, 0.7);
+            text-transform: uppercase;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 300px;
+        }
+
+        .menu-item {
+            font-size: 1.8rem;
+            color: #d4b886;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(to right, rgba(212, 184, 134, 0.1) 50%, transparent 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
+        }
+
+        .menu-item::before,
+        .menu-item::after {
+            content: '❈';
+            position: absolute;
+            font-size: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .menu-item::before {
+            left: 10px;
+        }
+
+        .menu-item::after {
+            right: 10px;
+        }
+
+        .menu-item:hover {
+            background-position: left bottom;
+            transform: scale(1.05);
+            border-color: rgba(212, 184, 134, 0.8);
+            text-shadow: 0 0 10px rgba(212, 184, 134, 0.5);
+            box-shadow: 0 0 20px rgba(212, 184, 134, 0.2);
+        }
+
+        .menu-item:hover::before,
+        .menu-item:hover::after {
+            opacity: 1;
         }
 
         .version {
             position: absolute;
-            bottom: 1rem;
-            right: 1rem;
+            bottom: 20px;
+            right: 20px;
             font-size: 0.8rem;
-            opacity: 0.7;
-            font-family: 'MedievalSharp', cursive;
+            opacity: 0.6;
+            z-index: 2;
         }
 
-        .torch {
-            position: fixed;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle at center, rgba(255, 150, 50, 0.4) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 999;
+        /* Story Modal Styles */
+        .story-modal {
             display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid rgba(212, 184, 134, 0.5);
+            padding: 2rem;
+            z-index: 10;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
         }
+
+        .story-content {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .character-portrait {
+            width: 200px;
+            height: 250px;
+            background: url('ASSETS/main_character (talking bubble).png') no-repeat top center;
+            background-size: 200px auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 1rem;
+        }
+
+        .character-name {
+            font-family: 'Cinzel', serif;
+            color: #d4b886;
+            font-size: 1.4rem;
+            margin-top: auto;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            position: absolute;
+            bottom: 60px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .dialogue-bubble {
+            flex: 1;
+            background: rgba(212, 184, 134, 0.1);
+            padding: 1.5rem;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #d4b886;
+            position: relative;
+        }
+
+        .dialogue-bubble::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 30px;
+            border-style: solid;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent rgba(212, 184, 134, 0.3) transparent transparent;
+        }
+
+        .continue-btn {
+            margin-top: 2rem;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            float: right;
+        }
+
+        .continue-btn:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9;
+        }
+
+        /* Tutorial Styles */
+        .tutorial-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10;
+            color: #d4b886;
+        }
+
+        .tutorial-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .character-area {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .player-character {
+            width: 200px;
+            height: 300px;
+            background: url('ASSETS/main_character (standing).png') no-repeat center;
+            background-size: contain;
+        }
+
+        .enemy-character {
+            width: 200px;
+            height: 300px;
+            background: url('ASSETS/enemy.png') no-repeat center;
+            background-size: contain;
+            transform: scaleX(-1);
+        }
+
+        .battle-ui {
+            position: absolute;
+            bottom: 2rem;
+            width: 80%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            padding: 1rem;
+        }
+
+        .battle-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .battle-button {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .battle-button:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        .tutorial-dialogue {
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            padding: 1rem 2rem;
+            font-family: 'Cormorant Garamond', serif;
+            color: #d4b886;
+            font-size: 1.2rem;
+            text-align: center;
+            min-width: 60%;
+        }
+
+        @keyframes menuAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-item {
+            animation: menuAppear 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.2s; }
+        .menu-item:nth-child(2) { animation-delay: 0.4s; }
+        .menu-item:nth-child(3) { animation-delay: 0.6s; }
+        .menu-item:nth-child(4) { animation-delay: 0.8s; }
+        .menu-item:nth-child(5) { animation-delay: 1.0s; }
     </style>
 </head>
 <body>
-    <div class="decorative-border"></div>
-    
-    <div class="menu-container">
+    <div class="container">
         <h1>The Unhallowed Parish</h1>
-        <div class="menu-buttons">
-            <button id="start-game">Begin Journey</button>
-            <button id="load-game">Continue Saga</button>
-            <button id="settings">Settings</button>
-            <button id="credits">Credits</button>
-            <button id="exit-game">Abandon Quest</button>
+        <div class="subtitle">A Tale of Dark Secrets</div>
+        <div class="menu">
+            <a class="menu-item">Begin Journey</a>
+            <a class="menu-item">Continue</a>
+            <a class="menu-item">Grimoire</a>
+            <a class="menu-item" data-action="settings">Settings</a>
+            <a class="menu-item">Exit</a>
         </div>
     </div>
 
-    <div class="version">v0.1.0</div>
-
-    <div class="torch"></div>
+    <div class="version">Alpha v0.1</div>
 
     <script>
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('mouseover', () => {
-                const audio = new Audio('data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=');
-                audio.play();
+        document.addEventListener('DOMContentLoaded', () => {
+            // Audio Context setup
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const menuMusic = new Audio('ASSETS/MENU.mp3');
+            menuMusic.loop = true;
+            menuMusic.volume = 0.4;
+
+            // Story sequence
+            const storySequence = [
+                {
+                    text: "I remember that night as if it were yesterday. The bells of Oakhaven's parish struck midnight, and as a devoted acolyte, I was preparing the church for the next day's service when the mist began to creep in...",
+                },
+                {
+                    text: "Having served the church since childhood, I thought I understood faith and devotion. But the whispers I began to hear during evening prayers, the shadows that moved against the candlelight - they tested my beliefs in ways I never imagined...",
+                },
+                {
+                    text: "When members of our congregation started to change, speaking in tongues that made the holy water boil, I knew our sacred grounds had been defiled by something ancient. Something that had been waiting beneath our feet all along...",
+                },
+                {
+                    text: "Now, after years of studying forbidden texts and seeking guidance through prayer, I have returned to face what lurks within these hallowed walls. May God grant me the strength to cleanse this parish of its unholy taint...",
+                }
+            ];
+
+            // Tutorial sequence
+            const tutorialSequence = [
+                {
+                    dialogue: "Welcome to your first encounter. As a man of faith, you'll face many corrupted beings in your journey.",
+                    showEnemy: false,
+                    type: 'intro'
+                },
+                {
+                    dialogue: "This twisted soul before you was once a fellow believer. Now, it's consumed by the parish's dark influence.",
+                    showEnemy: true,
+                    type: 'enemy_intro'
+                },
+                {
+                    dialogue: "You have several sacred weapons at your disposal. Choose wisely, as each action consumes Faith Points.",
+                    showEnemy: true,
+                    showActions: true,
+                    type: 'combat_intro'
+                }
+            ];
+
+            function showStoryModal(index) {
+                const mainMenu = document.querySelector('.container');
+                mainMenu.style.display = 'none';
+
+                const modal = document.createElement('div');
+                modal.className = 'story-modal';
+                modal.innerHTML = `
+                    <div class="story-content">
+                        <div class="character-portrait">
+                            <div class="character-name">David</div>
+                        </div>
+                        <div class="dialogue-bubble">
+                            ${storySequence[index].text}
+                        </div>
+                    </div>
+                    <button class="continue-btn">${index < storySequence.length - 1 ? 'Continue' : 'Begin Journey'}</button>
+                `;
+
+                const overlay = document.createElement('div');
+                overlay.className = 'modal-overlay';
+
+                document.body.appendChild(overlay);
+                document.body.appendChild(modal);
+
+                overlay.style.display = 'block';
+                modal.style.display = 'block';
+
+                const continueBtn = modal.querySelector('.continue-btn');
+                continueBtn.addEventListener('click', () => {
+                    if (index < storySequence.length - 1) {
+                        modal.remove();
+                        overlay.remove();
+                        showStoryModal(index + 1);
+                    } else {
+                        modal.remove();
+                        overlay.remove();
+                        startTutorial();
+                    }
+                });
+            }
+
+            function startTutorial() {
+                const tutorialContainer = document.createElement('div');
+                tutorialContainer.className = 'tutorial-container';
+                let currentStep = 0;
+
+                function showTutorialStep(step) {
+                    const currentSequence = tutorialSequence[step];
+                    
+                    tutorialContainer.innerHTML = `
+                        <div class="tutorial-scene">
+                            <div class="tutorial-dialogue">${currentSequence.dialogue}</div>
+                            
+                            <div class="character-area">
+                                <div class="player-character"></div>
+                                ${currentSequence.showEnemy ? '<div class="enemy-character"></div>' : ''}
+                            </div>
+                            
+                            ${currentSequence.showActions ? `
+                                <div class="battle-ui">
+                                    <div class="battle-actions">
+                                        <button class="battle-button" onclick="handleAttack()">Attack</button>
+                                        <button class="battle-button" onclick="handleHolyWater()">Holy Water</button>
+                                        <button class="battle-button" onclick="handlePurify()">Purify</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <button class="continue-btn">
+                                ${step < tutorialSequence.length - 1 ? 'Continue' : 'Start Game'}
+                            </button>
+                        </div>
+                    `;
+
+                    const continueBtn = tutorialContainer.querySelector('.continue-btn');
+                    continueBtn.addEventListener('click', () => {
+                        if (step < tutorialSequence.length - 1) {
+                            showTutorialStep(step + 1);
+                        } else {
+                            tutorialContainer.remove();
+                            console.log("Starting game...");
+                        }
+                    });
+
+                    if (currentSequence.showActions) {
+                        const battleButtons = tutorialContainer.querySelectorAll('.battle-button');
+                        battleButtons.forEach(button => {
+                            button.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                createClickSound();
+                                console.log(`${button.textContent} action triggered`);
+                            });
+                        });
+                    }
+                }
+
+                document.body.appendChild(tutorialContainer);
+                tutorialContainer.style.display = 'block';
+                showTutorialStep(0);
+            }
+
+            // Sound functions
+            function createHoverSound() {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                const filter = audioContext.createBiquadFilter();
+                
+                oscillator.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                oscillator.frequency.linearRampToValueAtTime(400, audioContext.currentTime + 0.1);
+                
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(1000, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.03, audioContext.currentTime + 0.05);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.2);
+            }
+
+            function createClickSound() {
+                const oscillator1 = audioContext.createOscillator();
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                const filter = audioContext.createBiquadFilter();
+                
+                oscillator1.connect(filter);
+                oscillator2.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator1.type = 'sine';
+                oscillator2.type = 'triangle';
+                
+                oscillator1.frequency.setValueAtTime(200, audioContext.currentTime);
+                oscillator2.frequency.setValueAtTime(300, audioContext.currentTime);
+                
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(500, audioContext.currentTime);
+                filter.Q.value = 1;
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.05, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
+                
+                oscillator1.start();
+                oscillator2.start();
+                oscillator1.stop(audioContext.currentTime + 0.3);
+                oscillator2.stop(audioContext.currentTime + 0.3);
+            }
+
+            // Event listeners
+            document.querySelector('.menu-item:first-child').addEventListener('click', () => {
+                showStoryModal(0);
             });
-        });
 
-        document.addEventListener('mousemove', (e) => {
-            const torch = document.querySelector('.torch');
-            torch.style.display = 'block';
-            torch.style.left = e.clientX - 50 + 'px';
-            torch.style.top = e.clientY - 50 + 'px';
-        });
+            // Menu music
+            window.addEventListener('focus', () => {
+                menuMusic.play().catch(err => {
+                    console.log('Autoplay prevented:', err);
+                });
+            });
 
-        document.getElementById('start-game').addEventListener('click', () => {
-            window.location.href = 'game.html';
+            window.addEventListener('blur', () => {
+                menuMusic.pause();
+            });
+
+            document.body.addEventListener('click', () => {
+                if (menuMusic.paused) {
+                    menuMusic.play().catch(err => {
+                        console.log('Playback prevented:', err);
+                    });
+                }
+            }, { once: true });
         });
     </script>
 </body>

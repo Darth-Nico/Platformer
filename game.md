@@ -1,60 +1,92 @@
-# Title: The Unhallowed Parish
+#  Title: The Unhallowed Parish  
 
-Genres: Adventure
+**Genres:** Narrative RPG, Horror  
 
-Uncover a centuries-old parasitic entity infesting a seemingly normal medieval town using only your wits and limited tools in this pixel art horror adventure.
+A parasitic horror festers beneath the surface of the seemingly serene medieval town of Oakhaven. In this story-driven RPG, players uncover the dark truth by solving puzzles, engaging in light combat, and making impactful decisions—all without extensive player movement.
 
-Players explore a large, interconnected medieval town from a top-down perspective, solving logic and physics-based puzzles to progress.  The core loop involves investigating locations, finding clues (hidden objects, environmental storytelling), and using found items to solve puzzles that reveal the parasitic entity's influence and its horrific nature.  Puzzles might involve manipulating objects to activate mechanisms or decipher cryptic clues left behind by past victims, drawing on classic adventure game tropes. The town itself is the central puzzle, with hidden areas and branching narratives dependent on the player's puzzle-solving choices.  The narrative unfolds through environmental storytelling, document analysis, and interactions with few surviving townsfolk, hinting at the insidious horror unfolding.
+---
 
-The game explores themes of paranoia, isolation, and the terrifying unknown within seemingly normal environments.  The medieval setting enhances the unsettling atmosphere, juxtaposing familiar medieval tropes with unsettling, otherworldly horror, as the player fights against a parasitic entity subtly warping the world around them. The survival aspect emphasizes resourcefulness and smart usage of found objects, creating a sense of vulnerability against a greater, parasitic foe.
+## Core Gameplay  
 
-# Mechanics
+- **Static Locations:**  
+  Players do not move freely but instead select actions, examine objects, and make choices from a fixed viewpoint in each location.  
 
-Herbal Remedies
+- **Narrative Progression:**  
+  Dialogue choices and decisions drive the story forward. NPCs offer information, items, or resistance based on the player's actions.  
 
-The player can collect and combine different herbs and ingredients found throughout the town to create remedies that provide temporary benefits, such as increased speed, enhanced perception to reveal hidden clues, or improved resistance to the parasitic entity's influence.  These remedies are crafted using a simple interface, adding a resource management aspect and strategic choices to the gameplay.  Recipes are discovered through exploration and deciphering cryptic notes.  The effects are time-limited, adding a layer of urgency and requiring players to manage their inventory strategically.
+- **Puzzle-Driven Gameplay:**  
+  Progression is tied to solving puzzles, discovering hidden elements, and using tools or remedies.  
 
-Light Manipulation
+- **Action Bar System:**  
+  Combat and environmental interactions are handled through a simple action bar, offering limited but meaningful options.  
 
-Certain puzzles and areas require the player to manipulate the town's environment by altering light sources or creating shadows to progress.  Using a combination of found objects (mirrors, lanterns, etc.) and the environment itself, players can solve these light-based puzzles by directing light beams, creating illusions, or using shadows to activate mechanisms or reveal hidden paths.  This mechanic is tied to the game's setting, creating puzzles consistent with the medieval theme.
+---
 
-Environmental Anomalies
+## Mechanics  
 
-The parasitic entity's influence manifests as subtle environmental changes, like flickering lights, shifting shadows, or unusual sounds.  By closely observing these environmental anomalies, the player can deduce clues about the entity's presence, the location of hidden areas, and the progression of the parasitic infestation.  These changes create dynamic puzzle elements and deepen the game's horror aspects, rewarding attentive observation and environmental storytelling.
+### Scene Interaction  
+Each scene is a self-contained environment where the player can:  
+1. **Examine Objects:** Click to investigate items, uncovering clues or hidden elements.  
+2. **Interact:** Use tools, remedies, or found objects to solve puzzles or access new areas.  
+3. **Dialogue Choices:** Converse with NPCs to learn more about the world and influence their behavior.  
 
-# Objectives
+### Herbal Remedies  
+Players collect and craft remedies to gain advantages in solving puzzles and overcoming challenges:  
+- **Examples of Remedies:**  
+  - **Insight Elixir:** Reveals hidden clues in the current scene.  
+  - **Aetheric Balm:** Temporarily shields the player from the entity's influence in puzzle interactions.  
+  - **Purifying Tonic:** Weakens manifestations of the parasitic entity, making puzzles or confrontations easier.  
 
-Weaken the parasitic entity by systematically purifying the seven ritual sites throughout the town.  Each site requires solving unique environmental puzzles to disrupt the entity's influence. Once all sites are purified, the entity will be vulnerable to a final confrontation, triggering the true ending. The purification process involves using light manipulation and herbal remedies, culminating in a final ritual to banish the entity.
+### Combat as Challenges  
+- Players occasionally face hostile manifestations of the entity.  
+- Combat occurs as a series of timed decisions, where players use items, remedies, or special tools to fend off threats.  
+- Examples of actions in combat:  
+  - **Strike with Weapon:** Basic attack with simple tools.  
+  - **Use Remedy:** Apply a crafted item to weaken the enemy or enhance defense.  
+  - **Activate Mechanism:** Use environmental objects to gain an advantage.  
 
-# Rules
+---
 
-Dynamic Parasitic Influence
+## Objectives  
 
-The parasitic entity's influence intensifies based on the player's actions and time spent in affected areas.  Increased influence manifests as more frequent and severe environmental anomalies, tougher puzzles, and the appearance of hostile entities. This creates a sense of urgency and risk/reward when exploring.  Purifying ritual sites reduces the entity's influence, lessening the environmental hazards and puzzle difficulty in those areas.
+1. **Investigate Fixed Locations:**  
+   - Locations like the church, cemetery, library, and sewers are presented as detailed scenes with interactive hotspots.  
+   - Players uncover the parasitic entity's history and influence through found objects, documents, and NPCs.  
 
-# Strategy
+2. **Purify Ritual Sites:**  
+   - Each ritual site is a distinct scene with a unique puzzle.  
+   - Players use light-based mechanics, crafted remedies, and found tools to complete purification rituals.  
 
-Prioritize exploring the town meticulously, searching for hidden clues and environmental anomalies. This reveals herb locations for remedies and hints towards puzzle solutions, reducing overall challenge. Early puzzle-solving focuses on light manipulation, creating easier access to areas. The acquired resources are then used to tackle increasingly difficult environmental puzzles at the ritual sites.
+3. **Unravel the Truth:**  
+   - By investigating and solving puzzles, players piece together the origins of the parasitic entity and make decisions that lead to one of several endings.  
 
-# How to Play
+---
 
-1. Explore the medieval town of Oakhaven, observing environmental anomalies and gathering herbs.
+## Key Features  
 
-2. Craft herbal remedies using discovered recipes to enhance your abilities.
+- **Minimal Movement, Maximum Focus:**  
+  The lack of direct player movement emphasizes environmental storytelling, puzzles, and decision-making.  
 
-3. Manipulate light sources using mirrors and lanterns to solve environmental puzzles.
+- **Immersive Storytelling:**  
+  Richly detailed scenes and cryptic lore draw players into the narrative.  
 
-4. Discover and investigate hidden areas by deciphering cryptic clues and notes.
+- **Simple RPG Systems:**  
+  Players manage a small inventory of remedies and tools, using them strategically in puzzles and challenges.  
 
-5. Uncover the seven ritual sites where the parasitic entity is most concentrated.
+- **Atmospheric Tension:**  
+  The parasitic influence grows more evident over time, altering scenes with unsettling visual and auditory effects.  
 
-6. Solve logic and physics-based puzzles at each ritual site to purify them.
+- **Choice-Driven Endings:**  
+  Player decisions impact the town, its inhabitants, and the final confrontation with the parasitic entity.  
 
-7. Use your crafted remedies and light manipulation skills to overcome challenges.
+---
 
-8. Reduce the parasitic entity's influence by purifying the ritual sites.
+## How to Play  
 
-9. Weaken the entity as its influence on the town diminishes.
-
-10. Confront the entity in a final ritual to banish it and achieve the true ending.
-
+1. **Investigate** each scene, examining objects and uncovering clues.  
+2. **Craft Remedies** using ingredients found during investigations.  
+3. **Solve Puzzles** by applying tools, remedies, or logic.  
+4. **Converse** with NPCs, making choices that shape their responses and unlock new information.  
+5. **Purify Ritual Sites** by completing their unique challenges.  
+6. **Defend Yourself** against manifestations of the parasitic entity using simple action-based combat.  
+7. **Piece Together the Mystery** of the parasitic entity to determine its fate—and yours.
