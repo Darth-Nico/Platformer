@@ -792,6 +792,45 @@
             min-width: 120px;
             height: 45px; /* Increased from 40px to 45px */
         }
+
+        /* Add these styles */
+        .soundtrack-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .soundtrack-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .soundtrack-option:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        .soundtrack-option.selected {
+            background: rgba(212, 184, 134, 0.2);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        .soundtrack-option input {
+            display: none;
+        }
+
+        .soundtrack-option span {
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
@@ -821,6 +860,23 @@
                 <div class="volume-control">
                     <span class="setting-label">Volume</span>
                     <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="40">
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Select Soundtrack</span>
+                    <div class="soundtrack-selector">
+                        <label class="soundtrack-option">
+                            <input type="radio" name="soundtrack" value="menu" checked>
+                            <span>Main Theme</span>
+                        </label>
+                        <label class="soundtrack-option">
+                            <input type="radio" name="soundtrack" value="track1">
+                            <span>Dark Ambience</span>
+                        </label>
+                        <label class="soundtrack-option">
+                            <input type="radio" name="soundtrack" value="track2">
+                            <span>Church Echoes</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="setting-item">
                     <label class="custom-checkbox">
@@ -921,13 +977,10 @@
             const settings = {
                 musicEnabled: musicToggle.checked,
                 soundEnabled: soundToggle.checked,
-                volume: volumeSlider.value / 100
+                volume: volumeSlider.value / 100,
+                selectedTrack: document.querySelector('input[name="soundtrack"]:checked').value
             };
             localStorage.setItem('gameSettings', JSON.stringify(settings));
-            window.dispatchEvent(new StorageEvent('storage', {
-                key: 'gameSettings',
-                newValue: JSON.stringify(settings)
-            }));
         }
 
         function loadSettings() {
@@ -937,12 +990,19 @@
                 soundToggle.checked = settings.soundEnabled;
                 volumeSlider.value = settings.volume * 100;
                 
+                // Set the correct radio button and style
+                const radioButton = document.querySelector(`input[name="soundtrack"][value="${settings.selectedTrack || 'menu'}"]`);
+                if (radioButton) {
+                    radioButton.checked = true;
+                    document.querySelectorAll('.soundtrack-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    radioButton.parentElement.classList.add('selected');
+                }
+                
                 if (settings.musicEnabled) {
                     menuMusic.volume = settings.volume;
                     menuMusic.play().catch(err => console.log('Autoplay prevented:', err));
-                } else {
-                    menuMusic.volume = 0;
-                    menuMusic.pause();
                 }
             }
         }
@@ -1128,6 +1188,45 @@
             modal.style.display = 'none';
             content.style.animation = 'none';
             clearTimeout(window.creditsTimeout);
+        });
+
+        document.querySelectorAll('.soundtrack-option input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                // Remove selected class from all options
+                document.querySelectorAll('.soundtrack-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Add selected class to chosen option
+                e.target.parentElement.classList.add('selected');
+                
+                const selectedTrack = e.target.value;
+                menuMusic.pause();
+                
+                switch(selectedTrack) {
+                    case 'menu':
+                        if (musicToggle.checked) {
+                            menuMusic.volume = volumeSlider.value / 100;
+                            menuMusic.play();
+                        }
+                        break;
+                    case 'track1':
+                        if (musicToggle.checked) {
+                            const track1 = new Audio('assets/soundtrack1.mp3');
+                            track1.volume = volumeSlider.value / 100;
+                            track1.play();
+                        }
+                        break;
+                    case 'track2':
+                        if (musicToggle.checked) {
+                            const track2 = new Audio('assets/soundtrack2.mp3');
+                            track2.volume = volumeSlider.value / 100;
+                            track2.play();
+                        }
+                        break;
+                }
+                saveSettings();
+            });
         });
     </script>
 </body>

@@ -580,6 +580,34 @@
             background: rgba(212, 184, 134, 0.1);
             border-color: rgba(212, 184, 134, 0.8);
         }
+
+        .inventory-button {
+            position: fixed;
+            bottom: 20px;
+            right: 40%;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .inventory-button:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
+
+        .inventory-button img {
+            width: 35px;
+            height: 35px;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -620,6 +648,10 @@
         <div class="inventory-slot" data-item="empty"></div>
         <div class="inventory-slot" data-item="empty"></div>
     </div>
+
+        <button class="inventory-button" onclick="toggleInventoryModal()" title="Open Inventory (E)">
+            <img src="assets/backpack-icon.png" alt="Inventory">
+        </button>
 
     <div class="hint">
         <button class="hint-close">&times;</button>
@@ -899,7 +931,7 @@
             };
 
             // Update the E key handler
-            function toggleInventoryModal() {
+            window.toggleInventoryModal = function() {
                 const existingModal = document.querySelector('.inventory-modal');
                 if (existingModal) {
                     // Update the inventory grid content before showing/hiding
@@ -960,7 +992,7 @@
                 closeBtn.addEventListener('click', () => {
                     modal.style.display = 'none';
                 });
-            }
+            };
 
             const settings = JSON.parse(localStorage.getItem('gameSettings'));
             if (settings) {
