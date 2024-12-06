@@ -851,6 +851,28 @@
                 height: 6px;
             }
         }
+
+        /* Add this style for the completion message */
+        .completion-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid rgba(212, 184, 134, 0.8);
+            padding: 2rem;
+            color: #d4b886;
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            text-align: center;
+            z-index: 100;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -1567,142 +1589,18 @@
             function initializeChapter2() {
                 const gameContainer = document.querySelector('.game-container');
                 gameContainer.classList.add('chapter2');
-                gameContainer.style.background = 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6))';
+                gameContainer.style.background = 'black';  // Pure black background
                 
-                // Reset dark overlay
+                // Keep dark overlay fully opaque
                 const darkOverlay = document.querySelector('.dark-overlay');
-                darkOverlay.style.opacity = '0.3';
+                darkOverlay.style.opacity = '1';
                 
-                // Add light source
-                const lightSource = document.createElement('div');
-                lightSource.className = 'light-source';
-                gameContainer.appendChild(lightSource);
-                
-                // Add target
-                const lightTarget = document.createElement('div');
-                lightTarget.className = 'light-target';
-                gameContainer.appendChild(lightTarget);
-                
-                // Add shards
-                const correctAngles = {
-                    shard0: 135,  // First shard: reflect 45° down-right
-                    shard1: 225,  // Second shard: reflect 45° down-left
-                    shard2: 315   // Third shard: reflect 45° up-left to target
-                };
-                
-                const shardPositions = [
-                    { top: '30%', left: '35%', rotation: 0, id: 'shard0' },  // First reflection point
-                    { top: '60%', left: '60%', rotation: 0, id: 'shard1' },  // Second reflection point
-                    { top: '50%', left: '80%', rotation: 0, id: 'shard2' }   // Final reflection to target
-                ];
-                
-                shardPositions.forEach((pos, index) => {
-                    const shard = document.createElement('div');
-                    shard.className = 'light-shard';
-                    shard.style.top = pos.top;
-                    shard.style.left = pos.left;
-                    shard.style.transform = `rotate(${pos.rotation}deg)`;
-                    shard.dataset.rotation = pos.rotation;
-                    shard.dataset.id = pos.id;
-                    
-                    shard.addEventListener('click', () => {
-                        const currentRotation = parseInt(shard.dataset.rotation);
-                        const newRotation = (currentRotation + 45) % 360;
-                        shard.style.transform = `rotate(${newRotation}deg)`;
-                        shard.dataset.rotation = newRotation;
-                        
-                        // Check if this shard is now at the correct angle
-                        if (newRotation === correctAngles[shard.dataset.id]) {
-                            shard.classList.add('correct');
-                        } else {
-                            shard.classList.remove('correct');
-                        }
-                        
-                        updateLightBeams();
-                    });
-                    
-                    gameContainer.appendChild(shard);
-                });
+                // Remove all existing elements
+                document.querySelectorAll('.light-source, .light-target, .light-shard, .light-beam').forEach(el => el.remove());
                 
                 // Update hint text
                 const hint = document.querySelector('.hint');
-                hint.innerHTML = `
-                    <button class="hint-close">&times;</button>
-                    Click on the shards to rotate them. Guide the light to its target.
-                `;
-                
-                // Reset hint close button functionality
-                const hintCloseBtn = hint.querySelector('.hint-close');
-                hintCloseBtn.addEventListener('click', () => {
-                    hint.style.display = 'none';
-                });
-                
-                // Initial light beam update
-                updateLightBeams();
-            }
-
-            function updateLightBeams() {
-                // Remove existing beams
-                document.querySelectorAll('.light-beam').forEach(beam => beam.remove());
-                
-                const source = document.querySelector('.light-source');
-                const target = document.querySelector('.light-target');
-                const shards = Array.from(document.querySelectorAll('.light-shard'));
-                
-                // Check if all shards are in correct position
-                const allShardsCorrect = shards.every(shard => 
-                    parseInt(shard.dataset.rotation) === correctAngles[shard.dataset.id]
-                );
-
-                if (allShardsCorrect) {
-                    // Create final beam path
-                    let currentPoint = {
-                        x: source.offsetLeft + source.offsetWidth / 2,
-                        y: source.offsetTop + source.offsetHeight / 2
-                    };
-                    
-                    // Create beam from source
-                    const finalBeam = createLightBeam(currentPoint, 0, true);
-                    finalBeam.classList.add('final');
-                    
-                    // Add visual effects
-                    source.style.boxShadow = '0 0 30px #fff, 0 0 50px #ffd54f';
-                    target.style.boxShadow = '0 0 30px #fff, 0 0 50px #ffd54f';
-                    
-                    // Add glow to all shards
-                    shards.forEach(shard => {
-                        shard.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.8)';
-                    });
-                    
-                    showDialogue("The light aligns perfectly... something is happening!");
-                    
-                    // Add completion logic here
-                    setTimeout(() => {
-                        // Add your next chapter/level transition here
-                        console.log("Puzzle completed!");
-                    }, 3000);
-                } else {
-                    // Regular beam update logic for partial completion
-                    let currentPoint = {
-                        x: source.offsetLeft + source.offsetWidth / 2,
-                        y: source.offsetTop + source.offsetHeight / 2
-                    };
-                    createLightBeam(currentPoint, 0);
-                }
-            }
-
-            function createLightBeam(start, angle, isFinal = false) {
-                const beam = document.createElement('div');
-                beam.className = 'light-beam';
-                
-                // Set beam position and rotation
-                beam.style.left = `${start.x}px`;
-                beam.style.top = `${start.y}px`;
-                beam.style.width = isFinal ? '200px' : '100px';  // Longer final beam
-                beam.style.transform = `rotate(${angle}deg)`;
-                
-                document.querySelector('.game-container').appendChild(beam);
-                return beam;
+                hint.style.display = 'none';  // Hide hint for now
             }
         });
     </script>
