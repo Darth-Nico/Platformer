@@ -845,11 +845,35 @@
             <div class="acknowledgments-title">Acknowledgments</div>
             
             <div class="credits-section">
+                <div class="credits-section-title">Game Studio</div>
+                <div class="credits-list">
+                    <div class="credit-item">
+                        <div>DotLogic</div>
+                        <div class="credit-role">Game Development Studio</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="credits-section">
                 <div class="credits-section-title">Development & Art Design</div>
                 <div class="credits-list">
                     <div class="credit-item">
                         <div>Niels Coert</div>
                         <div class="credit-role">Indie Game Developer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="credits-section">
+                <div class="credits-section-title">Story & Character</div>
+                <div class="credits-list">
+                    <div class="credit-item">
+                        <div>Niels Coert</div>
+                        <div class="credit-role">Story Writing</div>
+                    </div>
+                    <div class="credit-item">
+                        <div>Niels Coert</div>
+                        <div class="credit-role">Character Design</div>
                     </div>
                 </div>
             </div>
@@ -877,6 +901,7 @@
             <div class="copyright-section">
                 <div class="game-title-credits">The Unhallowed Parish</div>
                 <div class="copyright-text">© 2024 Niels Coert. All rights reserved.</div>
+                <div class="studio-text" style="margin-top: 1rem; font-size: 1.1rem; color: rgba(212, 184, 134, 0.7);">A DotLogic Game</div>
             </div>
         </div>
     </div>
@@ -1010,7 +1035,7 @@
                             <div class="hint-description">Open menu / Cancel action</div>
                         </div>
                     </div>
-                    <button class="tutorial-continue">Begin Your Journey</button>
+                    <button class="tutorial-continue">Continue</button>
                 </div>
             `;
 
@@ -1019,8 +1044,63 @@
             const continueBtn = tutorialOverlay.querySelector('.tutorial-continue');
             continueBtn.addEventListener('click', () => {
                 tutorialOverlay.remove();
-                window.location.href = 'game.html';
+                showOpeningStory();
             });
+        }
+
+        /* Update the opening story sequence */
+        const openingStorySequence = [
+            {
+                text: "I remember that night vividly... I had grown up in Oakhaven's parish, devoted to the church and its teachings. Father Michael was more than our priest - he was my mentor, guiding me in faith since childhood."
+            },
+            {
+                text: "When his letter arrived, my blood ran cold. The congregation I once knew had changed. One by one, the townsfolk had begun speaking in twisted tongues, their prayers becoming dark whispers that made the holy water boil and the crucifixes weep."
+            },
+            {
+                text: "As I stood before those heavy wooden doors that night, I could feel it - an unholy presence that had corrupted the very sanctuary where I once found peace. My faith would be my shield against whatever darkness had claimed my hometown..."
+            }
+        ];
+
+        function showOpeningStory() {
+            let currentIndex = 0;
+
+            function showStoryPart() {
+                const storyModal = document.createElement('div');
+                storyModal.className = 'story-modal';
+                storyModal.style.display = 'block';
+                storyModal.innerHTML = `
+                    <div class="story-content">
+                        <div class="character-portrait">
+                            <div class="character-name">David</div>
+                        </div>
+                        <div class="dialogue-bubble">
+                            ${openingStorySequence[currentIndex].text}
+                        </div>
+                    </div>
+                    <button class="continue-btn">${currentIndex < openingStorySequence.length - 1 ? 'Continue' : 'Enter the Church'}</button>
+                `;
+
+                const overlay = document.createElement('div');
+                overlay.className = 'modal-overlay';
+                overlay.style.display = 'block';
+
+                document.body.appendChild(overlay);
+                document.body.appendChild(storyModal);
+
+                const continueBtn = storyModal.querySelector('.continue-btn');
+                continueBtn.addEventListener('click', () => {
+                    storyModal.remove();
+                    overlay.remove();
+                    if (currentIndex < openingStorySequence.length - 1) {
+                        currentIndex++;
+                        showStoryPart();
+                    } else {
+                        window.location.href = 'game.html';
+                    }
+                });
+            }
+
+            showStoryPart();
         }
 
         // Add acknowledgments button handler
@@ -1038,7 +1118,7 @@
             window.creditsTimeout = setTimeout(() => {
                 modal.style.display = 'none';
                 content.style.animation = 'none';
-            }, 30000); // 30 seconds
+            }, 22000); // 22 seconds
         });
 
         // Add close button handler
