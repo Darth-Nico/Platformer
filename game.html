@@ -30,31 +30,31 @@
 
         .interaction-point {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(212, 184, 134, 0.7);
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(212, 184, 134, 0.7);
             border-radius: 50%;
             cursor: pointer;
             animation: pulse 2s infinite;
             background: rgba(212, 184, 134, 0.15);
-            box-shadow: 0 0 20px rgba(212, 184, 134, 0.3);
+            box-shadow: 0 0 30px rgba(212, 184, 134, 0.3);
         }
 
         @keyframes pulse {
             0% { 
                 transform: scale(1); 
                 opacity: 0.7;
-                box-shadow: 0 0 20px rgba(212, 184, 134, 0.3);
+                box-shadow: 0 0 30px rgba(212, 184, 134, 0.3);
             }
             50% { 
                 transform: scale(1.3); 
                 opacity: 1;
-                box-shadow: 0 0 30px rgba(212, 184, 134, 0.5);
+                box-shadow: 0 0 40px rgba(212, 184, 134, 0.5);
             }
             100% { 
                 transform: scale(1); 
                 opacity: 0.7;
-                box-shadow: 0 0 20px rgba(212, 184, 134, 0.3);
+                box-shadow: 0 0 30px rgba(212, 184, 134, 0.3);
             }
         }
 
@@ -180,14 +180,14 @@
         }
 
         .interaction-point img {
-            width: 30px;
-            height: 30px;
+            width: 50px;
+            height: 50px;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             opacity: 0.9;
-            filter: drop-shadow(0 0 5px rgba(212, 184, 134, 0.5));
+            filter: drop-shadow(0 0 8px rgba(212, 184, 134, 0.5));
         }
 
         .inventory.hidden {
@@ -608,6 +608,249 @@
             height: 35px;
             opacity: 0.8;
         }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .tome-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .tome-content {
+            background: rgba(20, 12, 8, 0.98);
+            border: 3px solid #8b6b4a;
+            padding: 2.5rem;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: #d4b886;
+            font-family: 'Cormorant Garamond', serif;
+            position: relative;
+            background-image: url('assets/parchment_texture.png');
+            box-shadow: 0 0 30px rgba(139, 107, 74, 0.2);
+        }
+
+        .tome-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .tome-content::-webkit-scrollbar-track {
+            background: rgba(20, 12, 8, 0.9);
+            border: 1px solid #8b6b4a;
+        }
+
+        .tome-content::-webkit-scrollbar-thumb {
+            background: #8b6b4a;
+            border-radius: 6px;
+            border: 2px solid rgba(20, 12, 8, 0.9);
+        }
+
+        .tome-content::-webkit-scrollbar-thumb:hover {
+            background: #a17e59;
+        }
+
+        .tome-content h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: #c4a062;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid rgba(139, 107, 74, 0.5);
+            padding-bottom: 1rem;
+        }
+
+        .tome-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #c4a062;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .tome-text p {
+            margin-bottom: 1.8rem;
+        }
+
+        .tome-text em {
+            display: block;
+            text-align: right;
+            font-style: italic;
+            margin-top: 3rem;
+            color: #8b6b4a;
+        }
+
+        .close-tome {
+            display: block;
+            margin: 2.5rem auto 0;
+            padding: 1rem 2.5rem;
+            background: rgba(139, 107, 74, 0.1);
+            border: 2px solid #8b6b4a;
+            color: #c4a062;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-tome:hover {
+            background: rgba(139, 107, 74, 0.2);
+            border-color: #a17e59;
+            text-shadow: 0 0 10px rgba(196, 160, 98, 0.5);
+        }
+
+        .continue-button {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            padding: 1rem 2rem;
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: #d4b886;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(212, 184, 134, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .continue-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .chapter-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            opacity: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 2s ease;
+        }
+
+        .chapter-text {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: #808080;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .continue-button:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+            text-shadow: 0 0 10px rgba(212, 184, 134, 0.5);
+        }
+
+        /* Add this style for chapter 2 */
+        .game-container.chapter2 {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('assets/alien_field.png') no-repeat center center;
+            background-size: cover;
+            filter: grayscale(100%);
+        }
+
+        .light-source {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #fff9c4 0%, #ffd54f 50%, #ff9800 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #ffd54f;
+        }
+
+        .light-target {
+            position: absolute;
+            top: 70%;
+            right: 10%;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #d4b886;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .light-shard {
+            position: absolute;
+            width: 120px;
+            height: 6px;
+            background: rgba(212, 184, 134, 0.9);
+            cursor: pointer;
+            transform-origin: center;
+            transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        .light-shard:hover {
+            background: rgba(212, 184, 134, 1);
+            box-shadow: 0 0 15px rgba(212, 184, 134, 0.5);
+        }
+
+        .light-shard.correct {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                        0 0 40px rgba(255, 255, 255, 0.6),
+                        0 0 60px rgba(255, 255, 255, 0.4);
+            border: none !important;
+        }
+
+        .light-beam {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255, 244, 179, 0.7), rgba(255, 213, 79, 0.7));
+            transform-origin: left;
+            pointer-events: none;
+        }
+
+        /* Update the final beam style */
+        .light-beam.final {
+            height: 6px;  /* Thicker than normal beams */
+            background: linear-gradient(to right, 
+                rgba(255, 255, 255, 1),
+                rgba(255, 244, 179, 0.9)
+            );
+            box-shadow: 
+                0 0 15px rgba(255, 255, 255, 0.9),
+                0 0 30px rgba(255, 244, 179, 0.7);
+            animation: finalBeamPulse 1.5s infinite;
+        }
+
+        @keyframes finalBeamPulse {
+            0% { 
+                opacity: 0.8;
+                height: 6px;
+            }
+            50% { 
+                opacity: 1;
+                height: 8px;
+            }
+            100% { 
+                opacity: 0.8;
+                height: 6px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -624,10 +867,18 @@
         
         <!-- Hidden initially -->
         <div class="interaction-point" style="top: 35%; left: 70%; display: none;" 
-             data-description="The stained glass window depicting Saint Michael... wait, is that a crack? Something about it seems... different."
-             data-item="sanctified-glass-shard"
-             data-name="Sanctified Glass Shard">
-            <img src="assets/sanctified-glass-shard.png" alt="Glass Shard">
+             data-description="A golden key glints in the candlelight... it seems to radiate with an otherworldly energy."
+             data-item="golden_key"
+             data-name="Golden Key">
+            <img src="assets/golden_key.png" alt="Golden Key">
+        </div>
+
+        <!-- Add the chest interaction point -->
+        <div class="interaction-point" style="top: 60%; left: 50%;" 
+             data-description="An ornate chest, its golden lock gleaming in the dim light."
+             data-item="chest"
+             data-name="Mysterious Chest">
+            <img src="assets/chest_closed.png" alt="Chest">
         </div>
     </div>
 
@@ -660,18 +911,63 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Check current chapter
+            const currentChapter = localStorage.getItem('currentChapter') || '1';
+
+            // Show chapter animation
+            const transition = document.createElement('div');
+            transition.className = 'chapter-transition';
+            transition.style.opacity = '1';
+
+            const chapterText = document.createElement('div');
+            chapterText.className = 'chapter-text';
+            chapterText.textContent = `Chapter ${currentChapter}`;
+            chapterText.style.opacity = '0';
+
+            transition.appendChild(chapterText);
+            document.body.appendChild(transition);
+            
+            // Show chapter text
+            setTimeout(() => {
+                chapterText.style.opacity = '1';
+            }, 1000);
+            
+            // Fade out everything
+            setTimeout(() => {
+                transition.style.opacity = '0';
+                // Remove after fade and initialize correct chapter
+                setTimeout(() => {
+                    transition.remove();
+                    if (currentChapter === '2') {
+                        // Remove chapter 1 elements
+                        document.querySelectorAll('.interaction-point').forEach(point => point.remove());
+                        // Initialize chapter 2
+                        initializeChapter2();
+                    }
+                    // Chapter 1 elements are already in the HTML by default
+                }, 2000);
+            }, 3000);
+
+            // Add this at the top of the script
+            let hasReadTome = false;
+            
             // Create audio elements
-            const gameMusic = new Audio('ASSETS/MENU.mp3');
+            const gameMusic = new Audio('ASSETS/the_unhallowed_parish_main_theme.mp3');
             const soundtrack1 = new Audio('ASSETS/soundtrack1.mp3');
             const soundtrack2 = new Audio('ASSETS/soundtrack2.mp3');
             
             let currentTrack = 0;
             const tracks = [gameMusic, soundtrack1, soundtrack2];
             
-            // Set up track sequence
+            // Set up track sequence with random selection
             tracks.forEach(track => {
                 track.addEventListener('ended', () => {
-                    currentTrack = (currentTrack + 1) % tracks.length;
+                    // Get array of possible next tracks (excluding current)
+                    const possibleTracks = tracks.filter((_, index) => index !== currentTrack);
+                    
+                    // Randomly select one of the remaining tracks
+                    const randomIndex = Math.floor(Math.random() * possibleTracks.length);
+                    currentTrack = tracks.indexOf(possibleTracks[randomIndex]);
                     const nextTrack = tracks[currentTrack];
                     
                     // Apply current volume settings
@@ -714,8 +1010,20 @@
             // Handle interaction points
             interactionPoints.forEach(point => {
                 point.addEventListener('click', () => {
+                    if (point.dataset.item === 'chest') {
+                        const hasKey = Array.from(document.querySelectorAll('.inventory-slot'))
+                            .some(slot => slot.dataset.item === 'golden_key');
+                        
+                        if (!hasKey) {
+                            point.classList.add('shake');
+                            setTimeout(() => point.classList.remove('shake'), 300);
+                            showDialogue("Locked... I'll need to find the key first.");
+                            return;
+                        }
+                    }
+                    
                     showDialogue(point.dataset.description);
-                    if (point.dataset.item) {
+                    if (point.dataset.item && point.dataset.item !== 'chest') {
                         addToInventory(point.dataset.item, point.dataset.name);
                         point.remove();
                         createCollectSound();
@@ -764,10 +1072,13 @@
                     createPickupSound();
                     
                     if (itemName === 'candle') {
-                        showDialogue("*A blessed candle... I'll need some light to see in this darkness.*");
+                        showDialogue("This candle might help me see what's lurking in the darkness...");
+                    }
+                    if (itemName === 'golden_key') {
+                        showDialogue("A key... there must be something worth locking away in here.");
                     }
                 } else {
-                    showDialogue("I can't carry any more items.");
+                    showDialogue("I can't carry anything else.");
                 }
             }
 
@@ -881,20 +1192,132 @@
             function useItem(itemName, itemDisplayName) {
                 if (itemName === 'candle') {
                     createUseItemSound();
-                    showDialogue("*I light the blessed candle. Its warm glow pushes back the darkness, revealing... what happened to this place?*");
+                    showDialogue("Dear Lord... what happened to this place while I was gone?");
                     
                     const overlay = document.querySelector('.dark-overlay');
                     overlay.style.opacity = '0';
                     
                     setTimeout(() => {
-                        const glassPoint = document.querySelector('.interaction-point[data-item="sanctified-glass-shard"]');
-                        glassPoint.style.display = 'block';
+                        const keyPoint = document.querySelector('.interaction-point[data-item="golden_key"]');
+                        keyPoint.style.display = 'block';
                     }, 2000);
                     
                     selectedSlot.dataset.item = 'empty';
                     selectedSlot.innerHTML = '';
                     selectedSlot.style.border = '1px solid rgba(212, 184, 134, 0.3)';
                     selectedSlot = null;
+                }
+                else if (itemName === 'golden_key') {
+                    const chest = document.querySelector('.interaction-point[data-item="chest"]');
+                    if (chest) {
+                        createUseItemSound();
+                        showDialogue("It fits... what secrets have they been keeping here?");
+                        chest.querySelector('img').src = 'assets/chest_opened.png';
+                        
+                        selectedSlot.dataset.item = 'empty';
+                        selectedSlot.innerHTML = '';
+                        selectedSlot.style.border = '1px solid rgba(212, 184, 134, 0.3)';
+                        selectedSlot = null;
+                        
+                        setTimeout(() => {
+                            showDialogue("A tome... these pages... this can't be right...");
+                            addToInventory('tome', 'Ancient Tome');
+                            chest.remove();
+                            
+                            // Add continue button
+                            const continueBtn = document.createElement('button');
+                            continueBtn.className = 'continue-button' + (!hasReadTome ? ' disabled' : '');
+                            continueBtn.textContent = 'Continue';
+                            document.body.appendChild(continueBtn);
+                            continueBtn.style.display = 'block';
+                            
+                            continueBtn.addEventListener('click', () => {
+                                if (!hasReadTome) return;
+                                
+                                // Create chapter transition
+                                const transition = document.createElement('div');
+                                transition.className = 'chapter-transition';
+                                
+                                const chapterText = document.createElement('div');
+                                chapterText.className = 'chapter-text';
+                                chapterText.textContent = 'Chapter 2';
+                                
+                                transition.appendChild(chapterText);
+                                document.body.appendChild(transition);
+                                
+                                // Fade to black
+                                setTimeout(() => {
+                                    transition.style.opacity = '1';
+                                }, 100);
+                                
+                                // Show chapter text
+                                setTimeout(() => {
+                                    chapterText.style.opacity = '1';
+                                }, 2000);
+                                
+                                // Update chapter in localStorage and reset game state
+                                setTimeout(() => {
+                                    localStorage.setItem('currentChapter', '2');
+                                    // Reset game state for chapter 2
+                                    document.querySelector('.dark-overlay').style.opacity = '1';
+                                    // Remove existing items and interactions
+                                    document.querySelectorAll('.interaction-point').forEach(point => point.remove());
+                                    document.querySelectorAll('.inventory-slot').forEach(slot => {
+                                        slot.dataset.item = 'empty';
+                                        slot.innerHTML = '';
+                                    });
+                                    // Remove continue button
+                                    continueBtn.remove();
+                                    // Remove transition after fade
+                                    setTimeout(() => {
+                                        transition.style.opacity = '0';
+                                        setTimeout(() => {
+                                            transition.remove();
+                                            // Here you would initialize chapter 2 content
+                                            initializeChapter2();
+                                        }, 2000);
+                                    }, 2000);
+                                }, 5000);
+                            });
+                        }, 1500);
+                    }
+                }
+                else if (itemName === 'tome') {
+                    createUseItemSound();
+                    
+                    const tomeModal = document.createElement('div');
+                    tomeModal.className = 'tome-modal';
+                    tomeModal.innerHTML = `
+                        <div class="tome-content">
+                            <h2>The Sacred Teachings of Light</h2>
+                            <div class="tome-text">
+                                <p>In the darkest corners of our sacred halls lies a truth known only to those who guard it. The divine light we wield is more than mere illumination - it is a weapon against the corruption that seeks to claim our souls.</p>
+                                
+                                <p>Through my studies, I have discovered that these entities, these parasites of faith, recoil from properly focused light. But mere candlelight is not enough. One must learn to manipulate the sacred geometry of light itself.</p>
+                                
+                                <p>The puzzles our forebears built into these halls are not mere decorations. They are tests - trials that require the proper manipulation of light to overcome. Mirrors, prisms, and blessed crystals must be aligned with purpose and precision.</p>
+                                
+                                <p>To any who find this tome: The path forward requires understanding of these divine mechanics. Use the blessed candles to reveal the hidden. Align the mirrors to direct the light. Only by mastering these principles can you hope to cleanse what lurks in these hallowed halls.</p>
+                                
+                                <p>May God grant you the wisdom to see, and the strength to face what the light reveals.</p>
+                                
+                                <em>- Father Michael</em>
+                            </div>
+                            <button class="close-tome">Close</button>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(tomeModal);
+                    
+                    const closeBtn = tomeModal.querySelector('.close-tome');
+                    closeBtn.addEventListener('click', () => {
+                        tomeModal.remove();
+                        hasReadTome = true;
+                        const continueBtn = document.querySelector('.continue-button');
+                        if (continueBtn) {
+                            continueBtn.classList.remove('disabled');
+                        }
+                    });
                 }
             }
 
@@ -905,14 +1328,12 @@
                         if (selectedSlot === slot) {
                             slot.style.border = '1px solid rgba(212, 184, 134, 0.3)';
                             selectedSlot = null;
-                            showDialogue(`*Unselected ${slot.dataset.name}*`);
                         } else {
                             if (selectedSlot) {
                                 selectedSlot.style.border = '1px solid rgba(212, 184, 134, 0.3)';
                             }
                             slot.style.border = '2px solid #d4b886';
                             selectedSlot = slot;
-                            showDialogue(`*Selected ${slot.dataset.name}*`);
                         }
                     }
                 });
@@ -924,9 +1345,13 @@
                     name: 'Blessed Candle',
                     description: 'A consecrated candle from the altar. Its flame burns with unusual intensity, useful for revealing hidden truths or warding off dark entities.'
                 },
-                'sanctified-glass-shard': {
-                    name: 'Sanctified Glass Shard',
-                    description: 'A fragment of the stained glass window. The holy imagery within seems to resonate with divine energy, capable of piercing through unholy barriers.'
+                'golden_key': {
+                    name: 'Golden Key',
+                    description: 'An ornate golden key emanating with divine energy. Its presence suggests the existence of a sacred door or container.'
+                },
+                'tome': {
+                    name: 'Ancient Tome',
+                    description: 'A weathered tome bound in leather, its pages filled with cryptic writings about manipulating divine light.'
                 }
             };
 
@@ -1136,6 +1561,148 @@
                 oscillator2.start();
                 oscillator1.stop(audioContext.currentTime + 0.3);
                 oscillator2.stop(audioContext.currentTime + 0.3);
+            }
+
+            // Add function to initialize chapter 2
+            function initializeChapter2() {
+                const gameContainer = document.querySelector('.game-container');
+                gameContainer.classList.add('chapter2');
+                gameContainer.style.background = 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6))';
+                
+                // Reset dark overlay
+                const darkOverlay = document.querySelector('.dark-overlay');
+                darkOverlay.style.opacity = '0.3';
+                
+                // Add light source
+                const lightSource = document.createElement('div');
+                lightSource.className = 'light-source';
+                gameContainer.appendChild(lightSource);
+                
+                // Add target
+                const lightTarget = document.createElement('div');
+                lightTarget.className = 'light-target';
+                gameContainer.appendChild(lightTarget);
+                
+                // Add shards
+                const correctAngles = {
+                    shard0: 135,  // First shard: reflect 45° down-right
+                    shard1: 225,  // Second shard: reflect 45° down-left
+                    shard2: 315   // Third shard: reflect 45° up-left to target
+                };
+                
+                const shardPositions = [
+                    { top: '30%', left: '35%', rotation: 0, id: 'shard0' },  // First reflection point
+                    { top: '60%', left: '60%', rotation: 0, id: 'shard1' },  // Second reflection point
+                    { top: '50%', left: '80%', rotation: 0, id: 'shard2' }   // Final reflection to target
+                ];
+                
+                shardPositions.forEach((pos, index) => {
+                    const shard = document.createElement('div');
+                    shard.className = 'light-shard';
+                    shard.style.top = pos.top;
+                    shard.style.left = pos.left;
+                    shard.style.transform = `rotate(${pos.rotation}deg)`;
+                    shard.dataset.rotation = pos.rotation;
+                    shard.dataset.id = pos.id;
+                    
+                    shard.addEventListener('click', () => {
+                        const currentRotation = parseInt(shard.dataset.rotation);
+                        const newRotation = (currentRotation + 45) % 360;
+                        shard.style.transform = `rotate(${newRotation}deg)`;
+                        shard.dataset.rotation = newRotation;
+                        
+                        // Check if this shard is now at the correct angle
+                        if (newRotation === correctAngles[shard.dataset.id]) {
+                            shard.classList.add('correct');
+                        } else {
+                            shard.classList.remove('correct');
+                        }
+                        
+                        updateLightBeams();
+                    });
+                    
+                    gameContainer.appendChild(shard);
+                });
+                
+                // Update hint text
+                const hint = document.querySelector('.hint');
+                hint.innerHTML = `
+                    <button class="hint-close">&times;</button>
+                    Click on the shards to rotate them. Guide the light to its target.
+                `;
+                
+                // Reset hint close button functionality
+                const hintCloseBtn = hint.querySelector('.hint-close');
+                hintCloseBtn.addEventListener('click', () => {
+                    hint.style.display = 'none';
+                });
+                
+                // Initial light beam update
+                updateLightBeams();
+            }
+
+            function updateLightBeams() {
+                // Remove existing beams
+                document.querySelectorAll('.light-beam').forEach(beam => beam.remove());
+                
+                const source = document.querySelector('.light-source');
+                const target = document.querySelector('.light-target');
+                const shards = Array.from(document.querySelectorAll('.light-shard'));
+                
+                // Check if all shards are in correct position
+                const allShardsCorrect = shards.every(shard => 
+                    parseInt(shard.dataset.rotation) === correctAngles[shard.dataset.id]
+                );
+
+                if (allShardsCorrect) {
+                    // Create final beam path
+                    let currentPoint = {
+                        x: source.offsetLeft + source.offsetWidth / 2,
+                        y: source.offsetTop + source.offsetHeight / 2
+                    };
+                    
+                    // Create beam from source
+                    const finalBeam = createLightBeam(currentPoint, 0, true);
+                    finalBeam.classList.add('final');
+                    
+                    // Add visual effects
+                    source.style.boxShadow = '0 0 30px #fff, 0 0 50px #ffd54f';
+                    target.style.boxShadow = '0 0 30px #fff, 0 0 50px #ffd54f';
+                    
+                    // Add glow to all shards
+                    shards.forEach(shard => {
+                        shard.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.8)';
+                    });
+                    
+                    showDialogue("The light aligns perfectly... something is happening!");
+                    
+                    // Add completion logic here
+                    setTimeout(() => {
+                        // Add your next chapter/level transition here
+                        console.log("Puzzle completed!");
+                    }, 3000);
+                } else {
+                    // Regular beam update logic for partial completion
+                    let currentPoint = {
+                        x: source.offsetLeft + source.offsetWidth / 2,
+                        y: source.offsetTop + source.offsetHeight / 2
+                    };
+                    createLightBeam(currentPoint, 0);
+                }
+            }
+
+            function createLightBeam(start, angle, isFinal = false) {
+                const beam = document.createElement('div');
+                beam.className = 'light-beam';
+                
+                // Set beam position and rotation
+                beam.style.left = `${start.x}px`;
+                beam.style.top = `${start.y}px`;
+                beam.style.width = isFinal ? '200px' : '100px';  // Longer final beam
+                beam.style.transform = `rotate(${angle}deg)`;
+                
+                document.querySelector('.game-container').appendChild(beam);
+                return beam;
             }
         });
     </script>

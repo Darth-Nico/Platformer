@@ -866,15 +866,15 @@
                     <div class="soundtrack-selector">
                         <label class="soundtrack-option">
                             <input type="radio" name="soundtrack" value="menu" checked>
-                            <span>Main Theme</span>
+                            <span>The Unhallowed Parish</span>
                         </label>
                         <label class="soundtrack-option">
                             <input type="radio" name="soundtrack" value="track1">
-                            <span>Dark Ambience</span>
+                            <span>Echoes of Faith</span>
                         </label>
                         <label class="soundtrack-option">
                             <input type="radio" name="soundtrack" value="track2">
-                            <span>Church Echoes</span>
+                            <span>Dark Secrets</span>
                         </label>
                     </div>
                 </div>
@@ -956,8 +956,8 @@
 
             <div class="copyright-section">
                 <div class="game-title-credits">The Unhallowed Parish</div>
-                <div class="copyright-text">© 2024 Niels Coert. All rights reserved.</div>
-                <div class="studio-text" style="margin-top: 1rem; font-size: 1.1rem; color: rgba(212, 184, 134, 0.7);">A DotLogic Game</div>
+                <div class="studio-text" style="margin-top: 1rem; font-size: 1.4rem; color: rgba(212, 184, 134, 0.7);">A DotLogic Game</div>
+                <div class="copyright-text" style="margin-top: 1rem;">© 2024 All rights reserved.</div>
             </div>
         </div>
     </div>
@@ -965,7 +965,7 @@
     <script>
         // Create audio context and menu music first
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const menuMusic = new Audio('ASSETS/MENU.mp3');
+        const menuMusic = new Audio('ASSETS/the_unhallowed_parish_main_theme.mp3');
         menuMusic.loop = true;
 
         // Get DOM elements
@@ -1009,12 +1009,33 @@
 
         // Add event listeners for settings controls
         musicToggle.addEventListener('change', () => {
+            const selectedTrack = document.querySelector('input[name="soundtrack"]:checked').value;
+            
             if (musicToggle.checked) {
-                menuMusic.volume = volumeSlider.value / 100;
-                menuMusic.play().catch(err => console.log('Autoplay prevented:', err));
+                const volume = volumeSlider.value / 100;
+                
+                // Start the currently selected track
+                switch(selectedTrack) {
+                    case 'menu':
+                        menuMusic.volume = volume;
+                        menuMusic.play().catch(err => console.log('Autoplay prevented:', err));
+                        break;
+                    case 'track1':
+                        if (!window.track1) window.track1 = new Audio('assets/soundtrack1.mp3');
+                        window.track1.volume = volume;
+                        window.track1.play().catch(err => console.log('Autoplay prevented:', err));
+                        break;
+                    case 'track2':
+                        if (!window.track2) window.track2 = new Audio('assets/soundtrack2.mp3');
+                        window.track2.volume = volume;
+                        window.track2.play().catch(err => console.log('Autoplay prevented:', err));
+                        break;
+                }
             } else {
-                menuMusic.volume = 0;
+                // Pause all tracks
                 menuMusic.pause();
+                if (window.track1) window.track1.pause();
+                if (window.track2) window.track2.pause();
             }
             saveSettings();
         });
@@ -1024,11 +1045,14 @@
             saveSettings();
         });
 
-        volumeSlider.addEventListener('input', () => {
-            const volume = volumeSlider.value / 100;
-            if (musicToggle.checked) {
-                menuMusic.volume = volume;
-            }
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            
+            // Apply volume to all tracks
+            menuMusic.volume = volume;
+            if (window.track1) window.track1.volume = volume;
+            if (window.track2) window.track2.volume = volume;
+            
             window.globalVolume = volume;
             saveSettings();
         });
@@ -1190,6 +1214,55 @@
             clearTimeout(window.creditsTimeout);
         });
 
+        /* Update the playNextTrack function */
+        function playNextTrack() {
+            const currentTrack = document.querySelector('input[name="soundtrack"]:checked').value;
+            
+            // Create array of possible next tracks (excluding current)
+            const possibleTracks = ['menu', 'track1', 'track2'].filter(track => track !== currentTrack);
+            
+            // Randomly select one of the remaining tracks
+            const nextTrack = possibleTracks[Math.floor(Math.random() * possibleTracks.length)];
+            
+            // Select the next radio button
+            const nextRadio = document.querySelector(`input[name="soundtrack"][value="${nextTrack}"]`);
+            nextRadio.checked = true;
+            
+            // Update the selected styling
+            document.querySelectorAll('.soundtrack-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            nextRadio.parentElement.classList.add('selected');
+            
+            // Play the next track
+            if (musicToggle.checked) {
+                switch(nextTrack) {
+                    case 'menu':
+                        menuMusic.volume = volumeSlider.value / 100;
+                        menuMusic.play();
+                        menuMusic.addEventListener('ended', playNextTrack);
+                        break;
+                    case 'track1':
+                        window.track1 = new Audio('assets/soundtrack1.mp3');
+                        window.track1.volume = volumeSlider.value / 100;
+                        window.track1.play();
+                        window.track1.addEventListener('ended', playNextTrack);
+                        break;
+                    case 'track2':
+                        window.track2 = new Audio('assets/soundtrack2.mp3');
+                        window.track2.volume = volumeSlider.value / 100;
+                        window.track2.play();
+                        window.track2.addEventListener('ended', playNextTrack);
+                        break;
+                }
+            }
+            
+            saveSettings();
+        }
+
+        /* Add ended event listeners for each track */
+        menuMusic.addEventListener('ended', playNextTrack);
+
         document.querySelectorAll('.soundtrack-option input').forEach(input => {
             input.addEventListener('change', (e) => {
                 // Remove selected class from all options
@@ -1201,27 +1274,43 @@
                 e.target.parentElement.classList.add('selected');
                 
                 const selectedTrack = e.target.value;
+                
+                // Stop all currently playing tracks
                 menuMusic.pause();
+                menuMusic.currentTime = 0;
+                
+                // Create and store references to other tracks if they exist
+                if (window.track1) {
+                    window.track1.pause();
+                    window.track1.currentTime = 0;
+                }
+                if (window.track2) {
+                    window.track2.pause();
+                    window.track2.currentTime = 0;
+                }
                 
                 switch(selectedTrack) {
                     case 'menu':
                         if (musicToggle.checked) {
                             menuMusic.volume = volumeSlider.value / 100;
                             menuMusic.play();
+                            menuMusic.addEventListener('ended', playNextTrack);
                         }
                         break;
                     case 'track1':
                         if (musicToggle.checked) {
-                            const track1 = new Audio('assets/soundtrack1.mp3');
-                            track1.volume = volumeSlider.value / 100;
-                            track1.play();
+                            window.track1 = new Audio('assets/soundtrack1.mp3');
+                            window.track1.volume = volumeSlider.value / 100;
+                            window.track1.play();
+                            window.track1.addEventListener('ended', playNextTrack);
                         }
                         break;
                     case 'track2':
                         if (musicToggle.checked) {
-                            const track2 = new Audio('assets/soundtrack2.mp3');
-                            track2.volume = volumeSlider.value / 100;
-                            track2.play();
+                            window.track2 = new Audio('assets/soundtrack2.mp3');
+                            window.track2.volume = volumeSlider.value / 100;
+                            window.track2.play();
+                            window.track2.addEventListener('ended', playNextTrack);
                         }
                         break;
                 }
