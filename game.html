@@ -199,29 +199,78 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid rgba(212, 184, 134, 0.5);
-            padding: 2rem;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
             z-index: 100;
             display: none;
         }
 
-        .pause-menu button {
-            display: block;
-            width: 200px;
-            margin: 1rem auto;
-            padding: 0.8rem;
-            background: transparent;
-            border: 1px solid rgba(212, 184, 134, 0.3);
-            color: #d4b886;
+        .pause-menu h1 {
             font-family: 'Cinzel', serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(212, 184, 134, 0.3),
+                         2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 6px;
+            color: #d4b886;
         }
 
-        .pause-menu button:hover {
-            background: rgba(212, 184, 134, 0.1);
+        .pause-menu .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 300px;
+        }
+
+        .pause-menu .menu-item {
+            font-size: 1.8rem;
+            color: #d4b886;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(to right, rgba(212, 184, 134, 0.1) 50%, transparent 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
+        }
+
+        .pause-menu .menu-item::before,
+        .pause-menu .menu-item::after {
+            content: '❈';
+            position: absolute;
+            font-size: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .pause-menu .menu-item::before {
+            left: 10px;
+        }
+
+        .pause-menu .menu-item::after {
+            right: 10px;
+        }
+
+        .pause-menu .menu-item:hover {
+            background-position: left bottom;
             border-color: rgba(212, 184, 134, 0.8);
+            text-shadow: 0 0 10px rgba(212, 184, 134, 0.5);
+        }
+
+        .pause-menu .menu-item:hover::before,
+        .pause-menu .menu-item:hover::after {
+            opacity: 1;
         }
 
         .inventory-modal {
@@ -487,6 +536,50 @@
             transition: opacity 2s ease;
             pointer-events: none;
         }
+
+        .dialogue-card {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid rgba(212, 184, 134, 0.5);
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            z-index: 10;
+        }
+
+        .dialogue-portrait {
+            width: 180px;
+            height: 250px;
+            background: url('assets/main_character (talking bubble).png') no-repeat center;
+            background-size: contain;
+        }
+
+        .hint-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(212, 184, 134, 0.3);
+            background: transparent;
+            color: #d4b886;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .hint-close:hover {
+            background: rgba(212, 184, 134, 0.1);
+            border-color: rgba(212, 184, 134, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -528,18 +621,39 @@
         <div class="inventory-slot" data-item="empty"></div>
     </div>
 
-    <div class="hint">Click on glowing points to investigate. Press 'E' to open inventory, 'Space' to use items.</div>
+    <div class="hint">
+        <button class="hint-close">&times;</button>
+        Click on glowing points to investigate. Press 'E' to open inventory, 'Space' to use items.
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Add background music
+            // Create audio elements
             const gameMusic = new Audio('ASSETS/MENU.mp3');
-            gameMusic.loop = true;
-            gameMusic.volume = 0.4;
+            const soundtrack1 = new Audio('ASSETS/soundtrack1.mp3');
+            const soundtrack2 = new Audio('ASSETS/soundtrack2.mp3');
+            
+            let currentTrack = 0;
+            const tracks = [gameMusic, soundtrack1, soundtrack2];
+            
+            // Set up track sequence
+            tracks.forEach(track => {
+                track.addEventListener('ended', () => {
+                    currentTrack = (currentTrack + 1) % tracks.length;
+                    const nextTrack = tracks[currentTrack];
+                    
+                    // Apply current volume settings
+                    if (settings?.musicEnabled) {
+                        nextTrack.volume = window.globalVolume;
+                        nextTrack.play().catch(err => console.log('Playback prevented:', err));
+                    }
+                });
+            });
 
-            // Auto-play music when game loads
+            // Start with first track
             window.addEventListener('click', () => {
-                if (gameMusic.paused) {
+                if (gameMusic.paused && settings?.musicEnabled) {
+                    gameMusic.volume = window.globalVolume;
                     gameMusic.play().catch(err => {
                         console.log('Playback prevented:', err);
                     });
@@ -548,13 +662,16 @@
 
             // Handle music on tab focus/blur
             window.addEventListener('focus', () => {
-                gameMusic.play().catch(err => {
-                    console.log('Autoplay prevented:', err);
-                });
+                const currentAudio = tracks[currentTrack];
+                if (settings?.musicEnabled) {
+                    currentAudio.play().catch(err => {
+                        console.log('Autoplay prevented:', err);
+                    });
+                }
             });
 
             window.addEventListener('blur', () => {
-                gameMusic.pause();
+                tracks[currentTrack].pause();
             });
 
             const dialogueBox = document.querySelector('.dialogue-box');
@@ -577,13 +694,13 @@
             function showDialogue(text) {
                 clearTimeout(currentDialogue);
                 
-                const existingDialogue = document.querySelector('.character-dialogue');
+                const existingDialogue = document.querySelector('.dialogue-card');
                 if (existingDialogue) {
                     existingDialogue.remove();
                 }
 
                 const dialogueElement = document.createElement('div');
-                dialogueElement.className = 'character-dialogue';
+                dialogueElement.className = 'dialogue-card';
                 dialogueElement.innerHTML = `
                     <div class="dialogue-portrait"></div>
                     <div class="dialogue-bubble">
@@ -611,6 +728,8 @@
                     emptySlot.dataset.item = itemName;
                     emptySlot.dataset.name = itemDisplayName;
                     emptySlot.innerHTML = `<img src="assets/${itemName}.png" alt="${itemDisplayName}">`;
+                    
+                    createPickupSound();
                     
                     if (itemName === 'candle') {
                         showDialogue("*A blessed candle... I'll need some light to see in this darkness.*");
@@ -651,9 +770,12 @@
             const pauseMenu = document.createElement('div');
             pauseMenu.className = 'pause-menu';
             pauseMenu.innerHTML = `
-                <button onclick="resumeGame()">Resume</button>
-                <button onclick="window.openSettings()">Settings</button>
-                <button onclick="window.location.href='index.html'">Return to Menu</button>
+                <h1>Paused</h1>
+                <div class="menu">
+                    <a class="menu-item" onclick="resumeGame()">Resume</a>
+                    <a class="menu-item" onclick="window.openSettings()">Settings</a>
+                    <a class="menu-item" onclick="window.location.href='index.html'">Return to Menu</a>
+                </div>
             `;
             document.body.appendChild(pauseMenu);
 
@@ -726,25 +848,22 @@
 
             function useItem(itemName, itemDisplayName) {
                 if (itemName === 'candle') {
+                    createUseItemSound();
                     showDialogue("*I light the blessed candle. Its warm glow pushes back the darkness, revealing... what happened to this place?*");
                     
-                    // Fade out the dark overlay
                     const overlay = document.querySelector('.dark-overlay');
                     overlay.style.opacity = '0';
                     
-                    // Show the glass shard interaction point after a delay
                     setTimeout(() => {
                         const glassPoint = document.querySelector('.interaction-point[data-item="sanctified-glass-shard"]');
                         glassPoint.style.display = 'block';
                     }, 2000);
                     
-                    // Remove the used candle from inventory
                     selectedSlot.dataset.item = 'empty';
                     selectedSlot.innerHTML = '';
                     selectedSlot.style.border = '1px solid rgba(212, 184, 134, 0.3)';
                     selectedSlot = null;
                 }
-                createCollectSound();
             }
 
             // Update inventory interactions
@@ -928,6 +1047,63 @@
                     volume: document.getElementById('volumeSlider').value / 100
                 };
                 localStorage.setItem('gameSettings', JSON.stringify(settings));
+            }
+
+            document.querySelector('.hint-close').addEventListener('click', () => {
+                document.querySelector('.hint').style.display = 'none';
+            });
+
+            // Add these sound effect functions
+            function createPickupSound() {
+                if (!window.soundEnabled) return;
+                
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.2 * window.globalVolume, audioContext.currentTime + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.01 * window.globalVolume, audioContext.currentTime + 0.2);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.2);
+            }
+
+            function createUseItemSound() {
+                if (!window.soundEnabled) return;
+                
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator1 = audioContext.createOscillator();
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator1.connect(gainNode);
+                oscillator2.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator1.type = 'sine';
+                oscillator2.type = 'triangle';
+                
+                oscillator1.frequency.setValueAtTime(300, audioContext.currentTime);
+                oscillator2.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator1.frequency.linearRampToValueAtTime(600, audioContext.currentTime + 0.3);
+                oscillator2.frequency.linearRampToValueAtTime(900, audioContext.currentTime + 0.3);
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.15 * window.globalVolume, audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01 * window.globalVolume, audioContext.currentTime + 0.3);
+                
+                oscillator1.start();
+                oscillator2.start();
+                oscillator1.stop(audioContext.currentTime + 0.3);
+                oscillator2.stop(audioContext.currentTime + 0.3);
             }
         });
     </script>
